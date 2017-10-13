@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='contact.css')}}">
+</head>
+<body>
+  {% include 'header.html' %}
+  <section class="main">
+    <h2>Contact Information:</h2>
+    <p>
+      <ul class="contactList">
+        <li><a class="thefloodemail" href="mailto:thefloodmag@gmail.com">TheFloodmag@gmail.com</a></li>
+        <li>Find us on twitter <a href="https://twitter.com/thefloodmag">@thefloodmag</a></li>
+      </ul>
+    </p>
+    <h2>Editors:</h2>
+    <p>
+      <ul class="contactList">
+        <li>Joe Parziale - <a href="https://twitter.com/JosephParziale">@JosephParziale</a></li>
+        <li>Nathan Albright - <a href="https://twitter.com/NateAlbright">@NateAlbright</a></li>
+        <li>Jonah Galeota-Sprung - <a href="https://twitter.com/jsnzs">@jsnzs</a></li>
+        <li>Megan Townsend - <a href="https://twitter.com/megctownsend">@megctownsend</a></li>
+        <li>Joel Rosenburg, visual editor - <a href="http://joelrosenburg.tumblr.com/">joelrosenburg.tumblr.com</a></li>
+      </ul>
+    </p>
+  </section>
+</body>
+</html>

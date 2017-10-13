@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Nunito|Nunito+Sans|Pacifico|Quicksand|Rubik" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='home.css')}}">
+</head>
+<body>
+  {% include 'header.html' %}
+  <!-- <p><a href="{{url_for('editHomePage')}}">Edit Home Page</a></p> -->
+  <!-- TODO: do i want to add this back or remove it? -->
+  <article>
+    <h3>
+      <a href="{{url_for('newArticle')}}">New Article</a>
+    </h3>
+  </article>
+  {% if not articles %}
+    <p>
+      The article list is empty.
+    </p>
+  {% else %}
+    {% for article in articles %}
+      <article>
+        <a href="{{url_for('editArticle', article_id=article.id)}}">
+          <h2>{{article.title}}</h2>
+          <!-- TODO: fix the author and photo, etc... along w/ home and archive -->
+          <p class="authorAndDate">{{article.author}}</p>
+          <p class="text">{{' '.join(article.html_text.split()[:30])}}...</p>
+        </a>
+      </article>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

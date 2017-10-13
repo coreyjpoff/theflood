@@ -1,0 +1,67 @@
+article {
+  margin: 1em 15px;
+  display: block;
+  text-align: center;
+}
+
+.article-image {
+  display: inline-block;
+}
+
+.article-image img {
+  max-width: 100%;
+  padding: 10px 0 0 0;
+  display: inline-block;
+}
+
+.caption {
+  text-align: left;
+  display: block;
+  margin: 0 0 10px 0;
+}
+
+.page-break {
+  width: 50%;
+}
+
+.text {
+  font: 100%/1.6 'Droid Serif', serif;
+  padding: 0;
+  margin: 0 auto;
+  display: block;
+  text-align: left;
+}
+
+h1 {
+  font: 180% 'Droid Serif', serif;
+  margin: 0;
+}
+
+h2 {
+  font: 150% 'Droid Serif', serif;
+  font-style: italic;
+  margin: 5px 0 0 0;
+}
+
+h3 {
+  font: 120% 'Droid Serif', serif;
+}
+
+.bio {
+  font: 95%/1.6 'Droid Serif', serif;
+  font-style: italic;
+}
+
+@media screen and (min-width: 500px) {
+  .text {
+    padding: 0 40px;
+  }
+}
+
+@media screen and (min-width:800px) {
+  .text {
+    font: 110%/1.6 'Droid Serif', serif;
+    padding: 0 80px;
+    max-width: 850px;
+  }
+}

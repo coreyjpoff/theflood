@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='article.css')}}">
+</head>
+<body>
+  {% include 'header.html' %}
+  <article>
+    {% if image %}
+      <section class="article-image">
+        <img alt="{{article.title}}" src="{{image.resource_location}}">
+        <span class="caption">{{image.caption}}</span>
+      </section>
+    {% endif %}
+    <section class="text">
+      <h1>{{article.title}}</h1>
+      {% if article.subtitle %}
+        <h2>{{article.subtitle}}</h2>
+      {% endif %}
+      <h3 class="authorAndDate">
+        {% if authors %}
+          By
+          {% for author in authors %}
+            {{author.name}} \
+          {% endfor %}
+        {% endif %}
+        {{article.publish_date}}
+      </h3>
+      {% if other_images %}
+        <section class="article-image">
+          {% for img in other_images %}
+            <img alt="{{img.caption}}" src="{{img.resource_location}}">
+          {% endfor %}
+        </section
+        <p></p>
+      {% endif %}
+      <section class="text">
+        {{article.html_text|safe}}
+      </section>
+      <section>
+        {% if authors %}
+          {% for author in authors %}
+            <p class="bio">{{author.bio}}</p>
+          {% endfor %}
+        {% endif %}
+      </section>
+    </section>
+  </article>
+</body>
+</html>

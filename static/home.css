@@ -1,0 +1,86 @@
+li.home-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.home-li a {
+  color: grey;
+}
+
+.main {
+  display: block;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+article {
+  width: 100%;
+  float: left;
+}
+
+.clear {
+  clear: both;
+}
+
+article a {
+  text-decoration-line: none;
+  color: black;
+  display: block;
+  margin: 1em 15px;
+}
+
+.article-image {
+  max-width: 100%;
+}
+
+article a .text {
+  font: 80%/1.6 'Droid Serif', serif;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+article a p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+article a h2 {
+  font: 150% 'Droid Serif', serif;
+  padding: 4px 0;
+  margin: 0;
+}
+
+article a h3 {
+  font: 120% 'Droid Serif', serif;
+  padding: 2px 0 0 0;
+  margin: 0;
+  font-style: italic;
+}
+
+article a .authorAndDate {
+  font: 70% 'Droid Serif', serif;
+  padding: 8px 0;
+  margin: 0;
+}
+
+@media screen and (min-width: 600px) {
+  article {
+    width: 50%;
+  }
+  
+  .featured {
+    width: 100%;
+  }
+  
+  .main {
+    margin: 0 80px;
+  }
+}
+
+@media screen and (min-width:1000px) {
+  .main {
+    margin: 0 auto;
+  }
+}

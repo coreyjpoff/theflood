@@ -1,0 +1,40 @@
+li.about-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.about-li a {
+  color: grey;
+}
+
+/*Body*/
+p {
+  width: 100%;
+  font: 100%/1.6 'Droid Serif', serif;
+  float: left;
+}
+
+.emphasis {
+  font-style: italic;
+  font-weight: bold;
+  display: inline;
+}
+
+section {
+  display: block;
+  padding: 0 10px;
+  max-width: 600px;
+  float: left;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 600px) {
+  section {
+    padding: 0 40px;
+  }
+}
+
+.disclaimer-info {
+  font: 90%/1.2 'Droid Serif', serif;
+  font-style: italic;
+}

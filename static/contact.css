@@ -1,0 +1,41 @@
+li.contact-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.contact-li a {
+  color: grey;
+}
+
+.main {
+  display: block;
+  max-width: 350px;
+  margin: 15px auto 0 auto;
+}
+
+.contactList {
+  display: block;
+  margin: 0 2em 0 0;
+}
+
+.contactList li {
+  display: block;
+  list-style-type: none;
+}
+
+a {
+  display: inline;
+}
+
+p {
+  /*width: 100%;*/
+  font: 100% 'Droid Serif', serif;
+  padding: 0;
+  margin: 0;
+}
+
+h2 {
+  font: 150% 'Droid Serif', serif;
+  padding: 15px 0 0 0;
+  margin: 0;
+}
