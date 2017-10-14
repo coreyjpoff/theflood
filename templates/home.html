@@ -49,10 +49,12 @@
                 {{article.publish_date}}
               </p>
               <section>
-                {% if article.featured %}
-                  {{' '.join(article.html_text.split()[:90])|safe}}...
+                {% if article.lead %}
+                  {{article.lead|safe}}
+                {% elif article.featured %}
+                  {{' '.join(article.html_text.split()[:90])|safe}}...</p>
                 {% else %}
-                  {{' '.join(article.html_text.split()[:50])|safe}}...
+                  {{' '.join(article.html_text.split()[:50])|safe}}...</p>
                 {% endif %}
               </section>
             </section>

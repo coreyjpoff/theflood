@@ -32,6 +32,8 @@ class Article(Base):
     html_text = Column(String, nullable=False)
     on_home = Column(Boolean, default=False, index=True)
     featured = Column(Boolean, default=False)
+    priority = Column(Integer)
+    lead = Column(String)
 
 
     @property
@@ -92,6 +94,14 @@ class ArticleResource(Base):
             'resource_type': self.resource_type,
             'caption': self.caption,
         }
+
+
+class Subscriber(Base):
+    __tablename__ = 'subscriber'
+    
+    email_address = Column(String(255), primary_key=True)
+    name = Column(String(255), nullable=False)
+    subscribed = Column(Boolean, default=True)
 
 
 engine = create_engine('sqlite:///flood.db')

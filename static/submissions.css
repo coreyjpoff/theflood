@@ -8,6 +8,19 @@ li.submissions-li a {
 }
 
 /*Body*/
+article {
+  display: block;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+img {
+  width: 100%;
+  display: block;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 p {
   width: 100%;
 }
@@ -21,8 +34,6 @@ p {
 .main {
   display: block;
   padding: 0 10px;
-  max-width: 600px;
-  float: left;
   margin: 0 auto;
 }
 
@@ -58,44 +69,3 @@ ul.submissions-paragraph li {
 .thefloodemail {
   display: inline-block;
 }
-
-
-
-
-/*.submissions-image {
-  width: 30%;
-  max-width: 1824px;
-  max-height: 1392px;
-  padding: 30px 40px;
-  display: block;
-}
-
-.submissions-about {
-  padding: 0 40px 0;
-  float: left;
-  width: 30%;
-  text-align: center;
-}*/
-
-/*@media screen and (max-width: 1099px) {
-  .submissions-body {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .submissions-image {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .submissions-about {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .submissions-history {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}*/

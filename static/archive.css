@@ -9,7 +9,10 @@ li.archive-li a {
 
 article {
   width: 100%;
+  max-width: 1000px;
   float: left;
+  margin: 0 auto 20px auto;
+  display: block;
 }
 
 article a {
@@ -17,6 +20,16 @@ article a {
   color: black;
   display: block;
   padding: 1em 15px;
+}
+
+article a:hover {
+  color: grey;
+}
+
+article a p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .imageAndCaption {
@@ -61,6 +74,16 @@ article a .authorAndDate {
 }
 
 @media screen and (min-width: 600px) {
+  .imageAndCaption {
+    max-width: 48%;
+  }
+  
+  .text {
+    width: 48%;
+  }
+}
+
+@media screen and (min-width: 900px) {
   .imageAndCaption {
     max-width: 28%;
   }

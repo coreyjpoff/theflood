@@ -7,35 +7,45 @@ li.contact-li a {
   color: grey;
 }
 
-.main {
+article {
   display: block;
+  max-width: 700px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.main {
   max-width: 350px;
-  margin: 15px auto 0 auto;
+  display: inline-block;
+  vertical-align: top;
+  margin: 15px 0 0 0;
+  font: 100% 'Droid Serif', serif;
+}
+
+img {
+  max-width: 250px;
+  display: inline-block;
+  margin: 10px auto 0 auto;
 }
 
 .contactList {
   display: block;
-  margin: 0 2em 0 0;
+  margin: 0 0 15px 0;
+  text-align: left;
 }
 
 .contactList li {
   display: block;
   list-style-type: none;
+  padding: 5px 0 0 0;
 }
 
 a {
   display: inline;
 }
 
-p {
-  /*width: 100%;*/
-  font: 100% 'Droid Serif', serif;
-  padding: 0;
-  margin: 0;
-}
-
 h2 {
   font: 150% 'Droid Serif', serif;
-  padding: 15px 0 0 0;
+  padding: 0;
   margin: 0;
 }

@@ -22,6 +22,7 @@ article {
 
 .page-break {
   width: 50%;
+  margin: 0 auto;
 }
 
 .text {
@@ -48,8 +49,12 @@ h3 {
 }
 
 .bio {
-  font: 95%/1.6 'Droid Serif', serif;
+  font: 90%/1.6 'Droid Serif', serif;
   font-style: italic;
+}
+
+a {
+  display: inline;
 }
 
 @media screen and (min-width: 500px) {
@@ -60,7 +65,6 @@ h3 {
 
 @media screen and (min-width:800px) {
   .text {
-    font: 110%/1.6 'Droid Serif', serif;
     padding: 0 80px;
     max-width: 850px;
   }

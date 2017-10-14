@@ -29,6 +29,10 @@ article a {
   margin: 1em 15px;
 }
 
+article a:hover {
+  color: grey;
+}
+
 .article-image {
   max-width: 100%;
 }

@@ -40,7 +40,11 @@
                 {{article.publish_date}}
               </p>
               <section>
-                {{' '.join(article.html_text.split()[:100])|safe}}...
+                {% if article.lead %}
+                  {{article.lead|safe}}
+                {% else %}
+                  {{' '.join(article.html_text.split()[:100])|safe}}...</p>
+                {% endif %}
               </section>
             </section>
           </a>

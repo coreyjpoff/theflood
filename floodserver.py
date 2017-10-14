@@ -8,10 +8,10 @@ import re
 from flask import Flask, render_template, request, redirect, url_for, \
     make_response, jsonify, g
 from flask import session as login_session
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Article, Author, ArticleAuthor, \
-    ArticleResource
+    ArticleResource, Subscriber
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 app = Flask(__name__)
@@ -70,14 +70,13 @@ def showAuthorArticlesJSON(author_id):
 @app.route('/home/')
 @app.route('/')
 def showHome():
-    articles = session.query(Article).filter_by(on_home=True).all()
+    articles = session.query(Article).filter_by(on_home=True).order_by(desc(Article.priority)).all()
     authors = {}
     images = {}
     for article in articles:
-        print(str(article.id) + ' and title: ' + article.title)
+        print(article.lead)
         authors[article.id] = getAuthorsForArticle(article.id)
         images[article.id] = getTitleImageForArticle(article.id)
-        print(authors[article.id][0].name)
     return render_template(
         'home.html',
         articles=articles,
@@ -88,7 +87,7 @@ def showHome():
 
 @app.route('/archive/')
 def showArchive():
-    articles = session.query(Article).all()
+    articles = session.query(Article).order_by(desc(Article.publish_date), desc(Article.priority)).all()
     authors = {}
     images = {}
     for article in articles:
@@ -136,10 +135,17 @@ def showContact():
 def showSubmissions():
     return render_template('submissions.html')
 
-
-@app.route('/donate')
-def showDonate():
-    return render_template('donate.html')
+# TODO: add a post method
+@app.route('/subscribe', methods=['GET', 'POST'])
+def showSubscribe():
+    if request.method == 'POST':
+        errorText = saveSubscriberFromForm(request.form)
+        if not errorText:
+            return redirect(url_for('showHome'))
+        else:
+            return render_template('subscribe.html', error=errorText)
+    else:
+        return render_template('subscribe.html', error='')
 
 
 @app.route('/login')
@@ -279,6 +285,21 @@ def saveArticleFromForm(article, form):
     session.add(article)
     session.commit()
 
+
+def saveSubscriberFromForm(form):
+    if not form.get('name'):
+        return "Name is required"
+    if not form.get('email'):
+        return "Email is required"
+    if len(session.query(Subscriber).filter_by(email_address=form.get('email')).all()) > 0:
+        return "That email address is already subscribed"
+    subscriber = Subscriber(
+        name=form.get('name'),
+        email_address=form.get('email')
+    )
+    session.add(subscriber)
+    session.commit()
+    return ''
 
 def getAuthorsForArticle(article_id):
     authors = session.query(Author).join(ArticleAuthor).filter_by(article_id=article_id).all()
