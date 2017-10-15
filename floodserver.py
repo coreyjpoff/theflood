@@ -481,7 +481,7 @@ def isAdmin(role):
 
 if __name__ == '__main__':
     # port = int(os.environ.get('PORT', 80))
-    app.secret_key = ''.join(
-        random.choice(string.ascii_uppercase + string.digits)
-        for x in xrange(32))
+    # app.secret_key = ''.join(
+    #     random.choice(string.ascii_uppercase + string.digits)
+    #     for x in xrange(32))
     app.run(host='0.0.0.0', port=8000)
