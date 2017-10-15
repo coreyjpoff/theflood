@@ -198,16 +198,16 @@ def logout():
 
 @app.route('/edit/')
 def showEditorHome():
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     articles = session.query(Article).all()
     return render_template('edit.html', articles=articles)
 
 
 @app.route('/edit/admin')
 def showAdminInfo():
-    if not isAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     return render_template('editAdmin.html')
 
 
@@ -215,8 +215,8 @@ def showAdminInfo():
 def editArticle(article_id):
     article = getArticle(article_id)
     authors = getAuthorsForArticle(article_id)
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     if request.method == 'POST':
         saveArticleFromForm(article, request.form)
         return redirect(url_for(
@@ -237,8 +237,8 @@ def editArticle(article_id):
 def newArticle():
     article = Article()
     # TODO: handle the authors, pics, etc whatever i do in edit--can i combine these?
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     if request.method == 'POST':
         saveArticleFromForm(article, request.form)
         return redirect(url_for(
@@ -252,8 +252,8 @@ def newArticle():
 
 @app.route('/edit/home')
 def editHomePage():
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     return render_template('editHome.html')
 
 
