@@ -487,3 +487,12 @@ if __name__ == '__main__':
         for x in xrange(32))
     app.debug = True
     app.run(host = '0.0.0.0', port = 8000)
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 80))
+    app.secret_key = ''.join(
+        random.choice(string.ascii_uppercase + string.digits)
+        for x in xrange(32))
+    server_address = ('', port)
+    httpd = ThreadHTTPServer(server_address, Shortener)
+    httpd.serve_forever()
