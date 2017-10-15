@@ -77,13 +77,12 @@ def showHome():
     for article in articles:
         authors[article.id] = getAuthorsForArticle(article.id)
         images[article.id] = getTitleImageForArticle(article.id)
-    return render_template('contact.html')
-    # return render_template(
-    #     'home.html',
-    #     articles=articles,
-    #     authors=authors,
-    #     images=images
-    # )
+    return render_template(
+        'home.html',
+        articles=articles,
+        authors=authors,
+        images=images
+    )
 
 
 @app.route('/archive/')
