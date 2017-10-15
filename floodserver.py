@@ -257,6 +257,12 @@ def editHomePage():
     return render_template('editHome.html')
 
 
+@app.route('/email-list')
+def showEmailList():
+    emailList = session.query(Subscriber).all()
+    return render_template('showEmailList.html', emailList=emailList)
+
+
 # helper functions
 def getArticle(article_id):
     try:
