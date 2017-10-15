@@ -74,7 +74,6 @@ def showHome():
     authors = {}
     images = {}
     for article in articles:
-        print(article.lead)
         authors[article.id] = getAuthorsForArticle(article.id)
         images[article.id] = getTitleImageForArticle(article.id)
     return render_template(
@@ -479,14 +478,6 @@ def isAdmin(role):
         return True
     return False
 
-
-if __name__ == '__main__':
-    # TODO turn off debug
-    app.secret_key = ''.join(
-        random.choice(string.ascii_uppercase + string.digits)
-        for x in xrange(32))
-    app.debug = True
-    app.run(host = '0.0.0.0', port = 8000)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))
