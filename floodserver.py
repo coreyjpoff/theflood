@@ -480,10 +480,8 @@ def isAdmin(role):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 80))
+    # port = int(os.environ.get('PORT', 80))
     app.secret_key = ''.join(
         random.choice(string.ascii_uppercase + string.digits)
         for x in xrange(32))
-    server_address = ('', port)
-    httpd = ThreadHTTPServer(server_address, Shortener)
-    httpd.serve_forever()
+    app.run()
