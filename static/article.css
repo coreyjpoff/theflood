@@ -68,4 +68,8 @@ a {
     padding: 0 80px;
     max-width: 850px;
   }
+  
+  .article-image {
+      max-width: 60%;
+  }
 }
