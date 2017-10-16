@@ -78,6 +78,51 @@ article a .authorAndDate {
     width: 100%;
   }
   
+  .featured .article-image {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+  
+  .featured .caption {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+  
+  article.featured a .text {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+  
+  .clear .article-image {
+    max-width: 70%;
+    margin: 0 0 0 auto;
+  }
+  
+  .clear .caption {
+    max-width: 70%;
+    margin: 0 0 0 auto;
+  }
+  
+  article.clear a .text {
+    max-width: 70%;
+    margin: 0 0 0 auto;
+  }
+  
+  .article-image {
+    max-width: 70%;
+    margin: 0 auto 0 0;
+  }
+  
+  .caption {
+    max-width: 70%;
+    margin: 0 auto 0 0;
+  }
+  
+  article a .text {
+    max-width: 70%;
+    margin: 0 auto 0 0;
+  }
+  
   .main {
     margin: 0 80px;
   }
