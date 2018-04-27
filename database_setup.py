@@ -1,108 +1,129 @@
-from datetime import date
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Date
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
+#!/usr/bin/env python2.7
+import psycopg2
 
 
-Base = declarative_base()
-today = date.today()
+def create_tables():
+    """create tables in database"""
+    commands = (
+    """
+    CREATE TABLE admin_user (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        signin_email VARCHAR(255) NOT NULL,
+        active_email VARCHAR(255),
+        role VARCHAR(255) NOT NULL,
+        on_mailer BOOLEAN DEFAULT 't'
+    )
+    """,
+    """
+    CREATE TABLE article (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(1024) NOT NULL,
+        subtitle VARCHAR(1024),
+        publish_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        issue INTEGER NOT NULL,
+        url_desc VARCHAR(255) NOT NULL,
+        html_text VARCHAR NOT NULL,
+        on_home BOOLEAN DEFAULT 'f' NOT NULL,
+        featured BOOLEAN DEFAULT 'f',
+        priority INTEGER DEFAULT 0,
+        lead VARCHAR
+    )
+    """,
+    # TODO: Create index on articles (on_home)?
+    """
+    CREATE TABLE author (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        bio VARCHAR
+    )
+    """,
+    """
+    CREATE TABLE article_author (
+        article_id INTEGER NOT NULL,
+        author_id INTEGER NOT NULL,
+        PRIMARY KEY (article_id, author_id),
+        FOREIGN KEY (article_id)
+            REFERENCES article (id),
+        FOREIGN KEY (author_id)
+            REFERENCES author (id)
+    )
+    """,
+    """
+    CREATE TABLE article_resource (
+        id SERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        article_id INTEGER REFERENCES article (id),
+        resource_type VARCHAR(255) NOT NULL,
+        is_title_img BOOLEAN DEFAULT 'f',
+        caption VARCHAR(1024),
+        resource_location VARCHAR(255) NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE subscriber (
+        email_address VARCHAR(255) PRIMARY KEY NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        subscribed BOOLEAN DEFAULT 't'
+    )
+    """
+    )
 
+    conn = None
+    try:
+        conn = psycopg2.connect(database="flood", user="flood", password="flood")
+        cur = conn.cursor()
+        for command in commands:
+            print("Executing command: " + command)
+            cur.execute(command)
+            conn.commit()
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
-# Table definitions
-class User(Base):
-    __tablename__ = 'user'
+def drop_tables():
+    """drop tables in database"""
+    commands = (
+    """
+    DROP TABLE admin_user CASCADE
+    """,
+    """
+    DROP TABLE article CASCADE
+    """,
+    """
+    DROP TABLE author CASCADE
+    """,
+    """
+    DROP TABLE article_author CASCADE
+    """,
+    """
+    DROP TABLE article_resource CASCADE
+    """,
+    """
+    DROP TABLE subscriber CASCADE
+    """
+    )
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
-    signin_email = Column(String(255), nullable=False)
-    active_email = Column(String(255))
-    role = Column(String(255), nullable=False)
-    on_mailer = Column(Boolean, default=False)
+    conn = None
+    try:
+        conn = psycopg2.connect(database="flood", user="flood", password="flood")
+        cur = conn.cursor()
+        for command in commands:
+            print("Executing command: " + command)
+            cur.execute(command)
+            conn.commit()
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
+if __name__ == '__main__':
+    drop_tables()
+    create_tables()
 
-class Article(Base):
-    __tablename__ = 'article'
-
-    id = Column(Integer, primary_key=True)
-    title = Column(String(1024), nullable=False)
-    subtitle = Column(String(1024))
-    publish_date = Column(Date, nullable=False, default=today)
-    url_desc = Column(String(255), nullable=False)
-    html_text = Column(String, nullable=False)
-    on_home = Column(Boolean, default=False, index=True)
-    featured = Column(Boolean, default=False)
-    priority = Column(Integer)
-    lead = Column(String)
-
-
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'subtitle': self.subtitle,
-            'publishDate': self.publishDate,
-            'url_desc': self.url_desc,
-        }
-
-
-class Author(Base):
-    __tablename__ = 'author'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
-    bio = Column(String)
-
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'bio': self.bio
-        }
-
-
-class ArticleAuthor(Base):
-    __tablename__ = 'article_authors'
-
-    article_id = Column(Integer, ForeignKey('article.id'), primary_key=True)
-    article = relationship(Article)
-    author_id = Column(Integer, ForeignKey('author.id'), primary_key=True)
-    author = relationship(Author)
-
-
-class ArticleResource(Base):
-    __tablename__ = 'article_resources'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
-    article_id = Column(Integer, ForeignKey('article.id'))
-    article = relationship(Article)
-    resource_type = Column(String(255), nullable=False)
-    is_title_img = Column(Boolean, default=False)
-    caption = Column(String(1024))
-    resource_location = Column(String(255), nullable=False)
-
-
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'article_id': self.article_id,
-            'resource_type': self.resource_type,
-            'caption': self.caption,
-        }
-
-
-class Subscriber(Base):
-    __tablename__ = 'subscriber'
-    
-    email_address = Column(String(255), primary_key=True)
-    name = Column(String(255), nullable=False)
-    subscribed = Column(Boolean, default=True)
-
-
-engine = create_engine('sqlite:///flood.db')
-Base.metadata.create_all(engine)
+# TODO: add serialize functions for tables

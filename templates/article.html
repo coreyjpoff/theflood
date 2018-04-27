@@ -16,39 +16,39 @@
   <article>
     {% if image %}
       <section class="header-image">
-        <img alt="{{article.title}}" src="{{image.resource_location}}">
-        <span class="caption">{{image.caption}}</span>
+        <img alt="{{article[1]}}" src="{{image[6]}}">
+        <span class="caption">{{image[5]}}</span>
       </section>
     {% endif %}
     <section class="text">
-      <h1>{{article.title}}</h1>
-      {% if article.subtitle %}
-        <h2>{{article.subtitle}}</h2>
+      <h1>{{article[1]}}</h1>
+      {% if article[2] %}
+        <h2>{{article[2]}}</h2>
       {% endif %}
       <h3 class="authorAndDate">
         {% if authors %}
           By
           {% for author in authors %}
-            {{author.name}} \
+            {{author[1]}} \
           {% endfor %}
         {% endif %}
-        {{article.publish_date}}
+        {{article[3]}}
       </h3>
       {% if other_images %}
         <section class="article-image">
           {% for img in other_images %}
-            <img alt="{{img.caption}}" src="{{img.resource_location}}">
+            <img alt="{{img[5]}}" src="{{img[6]}}">
           {% endfor %}
         </section
         <p></p>
       {% endif %}
       <section class="text">
-        {{article.html_text|safe}}
+        {{article[6]|safe}}
       </section>
       <section>
         {% if authors %}
           {% for author in authors %}
-            <p class="bio">{{author.bio|safe}}</p>
+            <p class="bio">{{author[2]|safe}}</p>
           {% endfor %}
         {% endif %}
       </section>

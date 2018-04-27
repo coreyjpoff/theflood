@@ -12,10 +12,19 @@
 </head>
 <body>
   {% include 'header.html' %}
+  <h2>With name:</h2>
   <article>
     <section class="main">
       {% for address in emailList %}
-        {{address.name}} -- {{address.email_address}}
+        {{address[1]}} &lt;{{address[0]}}&gt;;
+      {% endfor %}
+    </section>
+  </article>
+  <h2>No name:</h2>
+  <article>
+    <section class="main">
+      {% for address in emailList %}
+        {{address[0]}};
       {% endfor %}
     </section>
   </article>

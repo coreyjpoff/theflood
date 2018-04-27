@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
+# TODO: switch to python2.7?
+
+import sys
 import os
 import random
 import string
@@ -11,9 +14,13 @@ from flask import Flask, render_template, request, redirect, url_for, \
 from flask import session as login_session
 from sqlalchemy import create_engine, and_, desc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, Article, Author, ArticleAuthor, \
+from database_setup_old import Base, User, Article, Author, ArticleAuthor, \
     ArticleResource, Subscriber
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+import psycopg2
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
 
@@ -21,6 +28,9 @@ engine = create_engine('sqlite:///flood.db')
 Base.metadata.bind = engine
 BDSession = sessionmaker(bind=engine)
 session = BDSession()
+
+conn = psycopg2.connect(database="flood", user="flood", password="flood")
+cur = conn.cursor()
 
 # Constants
 CLIENT_ID = json.loads(
@@ -35,50 +45,18 @@ TITLE_IMAGE = 'TITLE_IMAGE'
 IMAGE = 'IMAGE'
 FOOTNOTE = 'FOOTNOTE'
 
-
-# JSON APIs TODO: come back and clean these up so they're useful
-@app.route('/archive/JSON')
-def showArchiveJSON():
-    articles = session.query(Article).all()
-    return jsonify(Articles=[a.serialize for a in articles])
-
-
-@app.route('/archive/<int:article_id>/JSON')
-def showArticleJSON(article_id):
-    article = getArticle(article_id)
-    return jsonify(Articles=[article.serialize])
-
-
-@app.route('/archive/<int:article_id>/authors/JSON')
-def showArticleAuthorsJSON(article_id):
-    authors = getAuthorsForArticle(article_id)
-    return jsonify(Authors=[a.serialize for a in authors])
-
-
-@app.route('/archive/authors/JSON')
-def showAuthorsJSON():
-    authors = session.query(Author).all()
-    return jsonify(Authors=[a.serialize for a in authors])
-
-
-@app.route('/archive/authors/<int:author_id>/JSON')
-def showAuthorArticlesJSON(author_id):
-    articles = getArticlesForAuthor(author_id)
-    return jsonify(Articles=[a.serialize for a in articles])
-
-
-# page renders
+# page renders XCJP need to clean up above this
 @app.route('/home/')
 @app.route('/')
 def showHome():
-    articles = session.query(Article).filter_by(on_home=True).order_by(desc(Article.priority)).all()
+    articles = getAllArticles(True)
     authors = {}
     images = {}
     for article in articles:
-        authors[article.id] = getAuthorsForArticle(article.id)
-        images[article.id] = getTitleImageForArticle(article.id)
+        authors[article[0]] = getAuthorsForArticle(article[0])
+        images[article[0]] = getTitleImageForArticle(article[0])
     return render_template(
-        'home.html',
+        'home-playground.html',
         articles=articles,
         authors=authors,
         images=images
@@ -87,12 +65,12 @@ def showHome():
 
 @app.route('/archive/')
 def showArchive():
-    articles = session.query(Article).order_by(desc(Article.publish_date), desc(Article.priority)).all()
+    articles = getAllArticles()
     authors = {}
     images = {}
     for article in articles:
-        authors[article.id] = getAuthorsForArticle(article.id)
-        images[article.id] = getTitleImageForArticle(article.id)
+        authors[article[0]] = getAuthorsForArticle(article[0])
+        images[article[0]] = getTitleImageForArticle(article[0])
     return render_template(
         'archive.html',
         articles=articles,
@@ -104,9 +82,9 @@ def showArchive():
 @app.route('/archive/<string:url_desc>/<int:article_id>')
 def showArticle(article_id, url_desc):
     articleToShow = getArticle(article_id)
-    image = getTitleImageForArticle(articleToShow.id)
-    other_images = getNontitleImagesForArticle(articleToShow.id)
-    authors = getAuthorsForArticle(articleToShow.id)
+    image = getTitleImageForArticle(articleToShow[0])
+    other_images = getNontitleImagesForArticle(articleToShow[0])
+    authors = getAuthorsForArticle(articleToShow[0])
     # articleToShow.html_text = parseTextElements(
     #     articleToShow.html_text,
     #     other_images
@@ -135,7 +113,6 @@ def showContact():
 def showSubmissions():
     return render_template('submissions.html')
 
-# TODO: add a post method
 @app.route('/subscribe', methods=['GET', 'POST'])
 def showSubscribe():
     if request.method == 'POST':
@@ -156,7 +133,7 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/login/<provider>', methods=['POST'])
 def login(provider):
     # Validate state token
@@ -176,7 +153,7 @@ def login(provider):
         response.headers['Content-Type'] = 'application/json'
         return response
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/logout')
 def logout():
     access_token = login_session.get('access_token')
@@ -195,28 +172,28 @@ def logout():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/')
 def showEditorHome():
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     articles = session.query(Article).all()
     return render_template('edit.html', articles=articles)
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/admin')
 def showAdminInfo():
-    if not isAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     return render_template('editAdmin.html')
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/<int:article_id>', methods=['GET', 'POST'])
 def editArticle(article_id):
     article = getArticle(article_id)
     authors = getAuthorsForArticle(article_id)
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     if request.method == 'POST':
         saveArticleFromForm(article, request.form)
         return redirect(url_for(
@@ -232,13 +209,13 @@ def editArticle(article_id):
             authors=authors
         )
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/new', methods=['GET', 'POST'])
 def newArticle():
     article = Article()
     # TODO: handle the authors, pics, etc whatever i do in edit--can i combine these?
-    if not isEditorOrAdmin(login_session.get('role')):
-        return redirect(url_for('showHome'))
+    # if not isEditorOrAdmin(login_session.get('role')):
+    #     return redirect(url_for('showHome'))
     if request.method == 'POST':
         saveArticleFromForm(article, request.form)
         return redirect(url_for(
@@ -249,7 +226,7 @@ def newArticle():
     else:
         return render_template('editArticle.html', article=article)
 
-
+# XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/home')
 def editHomePage():
     if not isEditorOrAdmin(login_session.get('role')):
@@ -259,21 +236,45 @@ def editHomePage():
 
 @app.route('/email-list')
 def showEmailList():
-    emailList = session.query(Subscriber).all()
-    return render_template('showEmailList.html', emailList=emailList)
+    # XCJP add security/login check
+    try:
+        sql = """SELECT * FROM subscriber; """
+        cur.execute(sql)
+        emailList = cur.fetchall()
+        return render_template('showEmailList.html', emailList=emailList)
+    except:
+        return redirect(url_for('showHome'))
 
 
 # helper functions
+def getAllArticles(on_home=False):
+    try:
+        if on_home:
+            sql = """SELECT * FROM article
+                WHERE on_home = 't'
+                ORDER BY priority DESC, id ASC; """
+        else:
+            sql = """SELECT * FROM article
+                ORDER BY priority DESC, id ASC; """
+        cur.execute(sql)
+        articles = cur.fetchall()
+        return articles
+    except:
+        return None
+
+
 def getArticle(article_id):
     try:
-        article = session.query(Article).filter_by(id=article_id).one()
-        if article.html_text:
-            article.html_text = article.html_text.replace("{{pull:", "}}test:")
+        sql = """
+            SELECT * FROM article a
+            WHERE a.id = %s; """ % str(article_id)
+        cur.execute(sql)
+        article = cur.fetchone()
         return article
     except:
         return None
-    
-    
+
+
 def saveArticleFromForm(article, form):
     if form.get('title'):
         article.title = form['title']
@@ -299,48 +300,66 @@ def saveSubscriberFromForm(form):
         return "Email is required"
     if len(session.query(Subscriber).filter_by(email_address=form.get('email')).all()) > 0:
         return "That email address is already subscribed"
-    subscriber = Subscriber(
-        name=form.get('name'),
-        email_address=form.get('email')
-    )
-    session.add(subscriber)
-    session.commit()
-    return ''
+    if findSubscriber(form.get('email')):
+        return "That email address is already subscribed"
+    try:
+        sql = """INSERT INTO subscriber (email_address,name)
+            VALUES (%s, %s); """
+        data = (form.get('email'), form.get('name'))
+        cur.execute(sql, data)
+        conn.commit()
+        return ''
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+
+def findSubscriber(email):
+    try:
+        sql = """SELECT * FROM subscriber s
+            WHERE s.email_address = '%s'; """ % email
+        cur.execute(sql)
+        return cur.fetchone()
+    except:
+        return None
 
 def getAuthorsForArticle(article_id):
-    authors = session.query(Author).join(ArticleAuthor).filter_by(article_id=article_id).all()
-    return authors
-
-
-def getArticlesForAuthor(author_id):
-    articles = session.query(Article).join(ArticleAuthor).filter_by(author_id=author_id).all()
-    return articles
-
-
-def getResourcesForArticle(article_id):
-    resources = session.query(ArticleResource).filter_by(article_id=article_id).all()
-    return resources
+    try:
+        command = """
+            SELECT * FROM author a
+            JOIN article_author aa
+            ON a.id = aa.author_id
+            WHERE aa.article_id = %s; """ % str(article_id)
+        cur.execute(command)
+        authors = cur.fetchall()
+        return authors
+    except:
+        return None
 
 
 def getTitleImageForArticle(article_id):
     try:
-        image = session.query(ArticleResource).filter_by(
-            article_id=article_id, is_title_img=True
-        ).one()
+        command = """
+            SELECT * FROM article_resource a
+            WHERE a.article_id = %s
+            AND a.is_title_img = 't'; """ % str(article_id)
+        cur.execute(command)
+        image = cur.fetchone()
         return image
     except:
         return None
-    
-    
+
+
 def getNontitleImagesForArticle(article_id):
     try:
-        images = session.query(ArticleResource).filter_by(
-            article_id=article_id, is_title_img=False
-        ).all()
+        command = """
+            SELECT * FROM article_resource a
+            WHERE a.article_id = %s
+            AND a.is_title_img = 'f'; """ % str(article_id)
+        cur.execute(command)
+        images = cur.fetchall()
         return images
     except:
         return None
-    
+
 
 def parseTextElements(article_text, image_list):
     # article_text = re.split(r'\{\{(img|break|foot)?(: ([0-9]+|[a-zA-Z]+)\}\}')
@@ -487,6 +506,5 @@ def isAdmin(role):
 
 
 if __name__ == '__main__':
-    # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 8000))
     app.run(host='0.0.0.0', port=port)
