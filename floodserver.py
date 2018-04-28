@@ -13,8 +13,6 @@ from flask import Flask, render_template, request, redirect, url_for, \
 from flask import session as login_session
 from sqlalchemy import create_engine, and_, desc
 from sqlalchemy.orm import sessionmaker
-from database_setup_old import Base, User, Article, Author, ArticleAuthor, \
-    ArticleResource, Subscriber
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import psycopg2
 
