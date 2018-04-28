@@ -25,9 +25,9 @@ conn = psycopg2.connect(database="flood", user="flood", password="flood")
 cur = conn.cursor()
 
 # Constants
-CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read()
-)['web']['client_id']
+# CLIENT_ID = json.loads(
+#     open('client_secrets.json', 'r').read()
+# )['web']['client_id']
 # column User.role
 USER_ROLE = 'USER'
 EDITOR_ROLE = 'EDITOR'
@@ -48,7 +48,7 @@ def showHome():
         authors[article[0]] = getAuthorsForArticle(article[0])
         images[article[0]] = getTitleImageForArticle(article[0])
     return render_template(
-        'home-playground.html',
+        'home.html',
         articles=articles,
         authors=authors,
         images=images
@@ -498,5 +498,6 @@ def isAdmin(role):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
+    # port = int(os.environ.get('PORT', 8000))
+    # app.run(host='0.0.0.0', port=port)
