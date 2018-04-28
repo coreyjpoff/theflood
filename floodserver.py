@@ -1,5 +1,4 @@
 #!/usr/bin/env python2.7
-# TODO: switch to python2.7?
 
 import sys
 import os
@@ -23,11 +22,6 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
-
-engine = create_engine('sqlite:///flood.db')
-Base.metadata.bind = engine
-BDSession = sessionmaker(bind=engine)
-session = BDSession()
 
 conn = psycopg2.connect(database="flood", user="flood", password="flood")
 cur = conn.cursor()
@@ -274,7 +268,7 @@ def getArticle(article_id):
     except:
         return None
 
-
+# XCJP update
 def saveArticleFromForm(article, form):
     if form.get('title'):
         article.title = form['title']
@@ -292,7 +286,7 @@ def saveArticleFromForm(article, form):
     session.add(article)
     session.commit()
 
-
+# XCJP update
 def saveSubscriberFromForm(form):
     if not form.get('name'):
         return "Name is required"
@@ -323,12 +317,12 @@ def findSubscriber(email):
 
 def getAuthorsForArticle(article_id):
     try:
-        command = """
+        sql = """
             SELECT * FROM author a
             JOIN article_author aa
             ON a.id = aa.author_id
             WHERE aa.article_id = %s; """ % str(article_id)
-        cur.execute(command)
+        cur.execute(sql)
         authors = cur.fetchall()
         return authors
     except:
@@ -337,11 +331,11 @@ def getAuthorsForArticle(article_id):
 
 def getTitleImageForArticle(article_id):
     try:
-        command = """
+        sql = """
             SELECT * FROM article_resource a
             WHERE a.article_id = %s
             AND a.is_title_img = 't'; """ % str(article_id)
-        cur.execute(command)
+        cur.execute(sql)
         image = cur.fetchone()
         return image
     except:
@@ -350,11 +344,11 @@ def getTitleImageForArticle(article_id):
 
 def getNontitleImagesForArticle(article_id):
     try:
-        command = """
+        sql = """
             SELECT * FROM article_resource a
             WHERE a.article_id = %s
             AND a.is_title_img = 'f'; """ % str(article_id)
-        cur.execute(command)
+        cur.execute(sql)
         images = cur.fetchall()
         return images
     except:
@@ -370,7 +364,7 @@ def parseTextElements(article_text, image_list):
     # '<img class="page-break", alt="Page break", src="/static/page-break.png">',
     return article_text
 
-
+# XCJP update
 def googleLogin(auth_code):
     try:
         # Upgrade the authorization code into a credentials object
@@ -469,7 +463,7 @@ def googleLogout(access_token):
         response.headers['Content-Type'] = 'applicatin/json'
         return response
 
-
+# XCJP update
 def createUser(login_session):
     newUser = User(
         name=login_session['username'],
@@ -482,7 +476,7 @@ def createUser(login_session):
     user = session.query(User).filter_by(signin_email=login_session['signin_email']).one()
     return user.id, user.role
 
-
+# XCJP update
 def getUserIDandRole(email):
     try:
         user = session.query(User).filter_by(signin_email=email).one()
