@@ -37,7 +37,7 @@ TITLE_IMAGE = 'TITLE_IMAGE'
 IMAGE = 'IMAGE'
 FOOTNOTE = 'FOOTNOTE'
 
-# page renders XCJP need to clean up above this
+# page renders
 @app.route('/home/')
 @app.route('/')
 def showHome():
@@ -54,7 +54,6 @@ def showHome():
         images=images
     )
 
-
 @app.route('/archive/')
 def showArchive():
     articles = getAllArticles()
@@ -69,7 +68,6 @@ def showArchive():
         authors=authors,
         images=images
     )
-
 
 @app.route('/archive/<string:url_desc>/<int:article_id>')
 def showArticle(article_id, url_desc):
@@ -90,16 +88,13 @@ def showArticle(article_id, url_desc):
         other_images=other_images
     )
 
-
 @app.route('/about')
 def showAbout():
     return render_template('about.html')
 
-
 @app.route('/contact')
 def showContact():
     return render_template('contact.html')
-
 
 @app.route('/submissions')
 def showSubmissions():
@@ -115,7 +110,6 @@ def showSubscribe():
             return render_template('subscribe.html', error=errorText)
     else:
         return render_template('subscribe.html', error='')
-
 
 @app.route('/login')
 def showLogin():
@@ -164,22 +158,22 @@ def logout():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-# XCJP Come back here when implemented--didn't switch DBs
+# XCJP check login
 @app.route('/edit/')
 def showEditorHome():
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
-    articles = session.query(Article).all()
+    articles = getAllArticles()
     return render_template('edit.html', articles=articles)
 
-# XCJP Come back here when implemented--didn't switch DBs
+# XCJP implement or delete
 @app.route('/edit/admin')
 def showAdminInfo():
     # if not isAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     return render_template('editAdmin.html')
 
-# XCJP Come back here when implemented--didn't switch DBs
+# XCJP check login
 @app.route('/edit/<int:article_id>', methods=['GET', 'POST'])
 def editArticle(article_id):
     article = getArticle(article_id)
@@ -190,9 +184,8 @@ def editArticle(article_id):
         saveArticleFromForm(article, request.form)
         return redirect(url_for(
             'showArticle',
-            article_id=article.id,
-            url_desc=article.url_desc,
-            authors=authors
+            article_id=article[0],
+            url_desc=article[5],
         ))
     else:
         return render_template(
@@ -498,6 +491,6 @@ def isAdmin(role):
 
 
 if __name__ == '__main__':
-    app.run()
-    # port = int(os.environ.get('PORT', 8000))
-    # app.run(host='0.0.0.0', port=port)
+    # app.run()
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port)

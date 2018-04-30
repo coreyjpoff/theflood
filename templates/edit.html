@@ -26,11 +26,11 @@
   {% else %}
     {% for article in articles %}
       <article>
-        <a href="{{url_for('editArticle', article_id=article.id)}}">
-          <h2>{{article.title}}</h2>
+        <a href="{{url_for('editArticle', article_id=article[0])}}">
+          <h2>{{article[1]}}</h2>
           <!-- TODO: fix the author and photo, etc... along w/ home and archive -->
-          <p class="authorAndDate">{{article.author}}</p>
-          <p class="text">{{' '.join(article.html_text.split()[:30])}}...</p>
+          <!-- <p class="authorAndDate">{{article.author}}</p> -->
+          <p class="text">{{' '.join(article[6].split()[:30])}}...</p>
         </a>
       </article>
     {% endfor %}
