@@ -164,7 +164,17 @@ def showEditorHome():
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     articles = getAllArticles()
-    return render_template('edit.html', articles=articles)
+    authors = {}
+    images = {}
+    for article in articles:
+        authors[article[0]] = getAuthorsForArticle(article[0])
+        images[article[0]] = getTitleImageForArticle(article[0])
+    return render_template(
+        'edit.html',
+        articles=articles,
+        authors=authors,
+        images=images
+    )
 
 # XCJP implement or delete
 @app.route('/edit/admin')
@@ -174,42 +184,77 @@ def showAdminInfo():
     return render_template('editAdmin.html')
 
 # XCJP check login
-@app.route('/edit/<int:article_id>', methods=['GET', 'POST'])
-def editArticle(article_id):
+@app.route('/edit/<string:editor>/<int:article_id>', methods=['GET', 'POST'])
+def editArticle(article_id,editor):
     article = getArticle(article_id)
     authors = getAuthorsForArticle(article_id)
+    image = getTitleImageForArticle(article_id)
+    other_images = getNontitleImagesForArticle(article_id)
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
-        saveArticleFromForm(article, request.form)
+        saveExistingArticleFromForm(article, request.form)
         return redirect(url_for(
             'showArticle',
             article_id=article[0],
             url_desc=article[5],
         ))
+    elif editor == 'raw':
+        return render_template(
+            'editArticleRaw.html',
+            article=article,
+            authors=authors,
+            image=image,
+            other_images=other_images
+        )
     else:
         return render_template(
             'editArticle.html',
             article=article,
-            authors=authors
+            authors=authors,
+            image=image,
+            other_images=other_images
         )
 
-# XCJP Come back here when implemented--didn't switch DBs
+# XCJP check login
 @app.route('/edit/new', methods=['GET', 'POST'])
 def newArticle():
-    article = Article()
+    article = [-1,None,None,None,None,None,None,None,None,None]
     # TODO: handle the authors, pics, etc whatever i do in edit--can i combine these?
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
-        saveArticleFromForm(article, request.form)
+        savedData = saveNewArticleFromForm(article, request.form)
         return redirect(url_for(
             'showArticle',
-            article_id=article.id,
-            url_desc=article.url_desc
+            article_id=savedData[0],
+            url_desc='newart'
         ))
     else:
         return render_template('editArticle.html', article=article)
+        
+@app.route('/edit/authors/')
+def editAuthorsHome():
+    authors = getAllAuthors()
+    return render_template('editAuthors.html', authors=authors)
+    
+@app.route('/edit/authors/<int:auth_id>/', methods=['GET', 'POST'])
+def editAuthor(auth_id):
+    author = getAuthor(auth_id)
+    if request.method == 'POST':
+        saveExistingAuthorFromForm(author, request.form)
+        return redirect(url_for('editAuthorsHome'))
+    else:
+        return render_template('editAuthor.html', author=author)
+    
+@app.route('/edit/authors/new/', methods=['GET', 'POST'])
+def newAuthor():
+    author = [-1, None, None]
+    if request.method == 'POST':
+        author = saveNewAuthorFromForm(author, request.form)
+        return redirect(url_for('editAuthorsHome'))
+    else:
+        return render_template('editAuthor.html', author=author)
 
 # XCJP Come back here when implemented--didn't switch DBs
 @app.route('/edit/home')
@@ -217,7 +262,6 @@ def editHomePage():
     if not isEditorOrAdmin(login_session.get('role')):
         return redirect(url_for('showHome'))
     return render_template('editHome.html')
-
 
 @app.route('/email-list')
 def showEmailList():
@@ -229,7 +273,6 @@ def showEmailList():
         return render_template('showEmailList.html', emailList=emailList)
     except:
         return redirect(url_for('showHome'))
-
 
 # helper functions
 def getAllArticles(on_home=False):
@@ -247,7 +290,6 @@ def getAllArticles(on_home=False):
     except:
         return None
 
-
 def getArticle(article_id):
     try:
         sql = """
@@ -259,32 +301,112 @@ def getArticle(article_id):
     except:
         return None
 
-# XCJP update
-def saveArticleFromForm(article, form):
-    if form.get('title'):
-        article.title = form['title']
-    if form.get('subtitle'):
-        article.subtitle = form['subtitle']
-    urlDescLen = min(len(article.title), 5)
-    article.url_desc = ''.join(c for c in article.title if (
-        c.isalnum() or c == ' '
-    ))
-    article.url_desc = '-'.join(article.url_desc.split()[:urlDescLen]).lower()
-    if form.get('html_text'):
-        article.html_text = form['html_text']
-    article.on_home = form.get('on_home')
-    article.featured = form.get('featured')
-    session.add(article)
-    session.commit()
+def saveExistingArticleFromForm(article, form):
+    article = getArticleDataFromForm(article, form)
+    try:
+        sql = """UPDATE article SET (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead)
+            =(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            WHERE id=%s; """
+        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10], article[0])
+        cur.execute(sql, data)
+        conn.commit()
+        return ''
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
 
-# XCJP update
+def saveNewArticleFromForm(article, form):
+    article = getArticleDataFromForm(article, form)
+    try:
+        sql = """INSERT INTO article (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *;"""
+        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10])
+        cur.execute(sql, data)
+        savedData = cur.fetchone()
+        conn.commit()
+        return savedData
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+    
+def getArticleDataFromForm(article, form):
+    if form.get('title'):
+        title = form['title']
+    else:
+        title = ''
+    if form.get('subtitle'):
+        subtitle = form['subtitle']
+    else:
+        subtitle = ''
+    if article[5]:
+        url_desc = article[5]
+    else:
+        urlDescLen = min(len(title), 5)
+        url_desc = ''.join(c for c in title if (
+            c.isalnum() or c == ' '
+        ))
+        url_desc = '-'.join(url_desc.split()[:urlDescLen]).lower()
+    if form.get('html_text'):
+        html_text = form['html_text']
+    else:
+        html_text = ''
+    if form.get('issue'):
+        issue = form['issue']
+    else:
+        issue = ''
+    if form.get('priority'):
+        priority = form.get('priority')
+    else:
+        priority = ''
+    if form.get('lead'):
+        lead = form.get('lead')
+    else:
+        lead = ''
+    return [article[0], title, subtitle, article[3], issue, url_desc,
+        html_text, form.get('on_home'), form.get('featured'), priority, lead]
+
+def saveNewAuthorFromForm(author, form):
+    author = getAuthorDataFromForm(author, form)
+    try:
+        sql = """INSERT INTO author (name, bio)
+            VALUES (%s, %s) RETURNING *;"""
+        data = (author[1], author[2])
+        cur.execute(sql, data)
+        savedData = cur.fetchone()
+        conn.commit()
+        return savedData
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+
+def saveExistingAuthorFromForm(author, form):
+    author = getAuthorDataFromForm(author, form)
+    try:
+        sql = """UPDATE author SET (name, bio)
+            =(%s, %s) WHERE id = %s;"""
+        data = (author[1], author[2], author[0])
+        cur.execute(sql, data)
+        savedData = cur.fetchone()
+        conn.commit()
+        return savedData
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+    
+
+def getAuthorDataFromForm(author, form):
+    if form.get('name'):
+        name = form['name']
+    else:
+        name = ''
+    if form.get('bio'):
+        bio = form['bio']
+    else:
+        bio = ''
+    return [author[0], name, bio]
+    
+# XCJP add some email verification
 def saveSubscriberFromForm(form):
     if not form.get('name'):
         return "Name is required"
     if not form.get('email'):
         return "Email is required"
-    if len(session.query(Subscriber).filter_by(email_address=form.get('email')).all()) > 0:
-        return "That email address is already subscribed"
     if findSubscriber(form.get('email')):
         return "That email address is already subscribed"
     try:
@@ -319,6 +441,24 @@ def getAuthorsForArticle(article_id):
     except:
         return None
 
+def getAllAuthors():
+    try:
+        sql = """SELECT * FROM author; """
+        cur.execute(sql)
+        authors = cur.fetchall()
+        return authors
+    except:
+        return None
+        
+def getAuthor(auth_id):
+    try:
+        sql = """SELECT * FROM author
+        WHERE id = %s; """
+        cur.execute(sql, str(auth_id))
+        author = cur.fetchone()
+        return author
+    except:
+        return None
 
 def getTitleImageForArticle(article_id):
     try:

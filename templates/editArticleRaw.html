@@ -5,16 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Flood</title>
-  <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=23526fpfqgaeyll6amw1a0xi473w9n58d85cpyjzwsen70s3">
-  </script>
-  <script>tinymce.init({ selector:'textarea' });</script>
   <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='article.css')}}">
   <link rel="icon" href="/static/images/Flood_Heron.png">
 </head>
 <body>
-{% include 'editHeader.html' %}
+  {% include 'editHeader.html' %}
   <article>
     {% if image %}
       <section class="header-image">
@@ -27,7 +24,7 @@
       {% if article[2] %}
         <h2>{{article[2]}}</h2>
       {% endif %}
-      {% if article[0] != -1 %}
+      {% if article[0] %}
         <h3>ID: {{article[0]}}</h3>
       {% else %}
         <h3>New Article</h3>
@@ -109,7 +106,7 @@
           <!-- TODO: add authors, upload photos, etc -->
           <input type='submit' value='Save and View'>
           <a href="{{url_for('showEditorHome')}}">Cancel</a>
-          <a <a href="{{url_for('editArticle', article_id=article[0], editor='raw')}}">View raw html text (changes will be discarded)</a>
+          <a <a href="{{url_for('editArticle', article_id=article[0], editor='editor')}}">Go back to formatted editor text (changes will be discarded)</a>
         </form>
       </section>
     </p>

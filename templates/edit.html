@@ -7,33 +7,51 @@
   <title>The Flood</title>
   <link href="https://fonts.googleapis.com/css?family=Nunito|Nunito+Sans|Pacifico|Quicksand|Rubik" rel="stylesheet">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-  <link rel="stylesheet" href="{{url_for('static', filename='home.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='archive.css')}}">
   <link rel="icon" href="/static/images/Flood_Heron.png">
 </head>
 <body>
-  {% include 'header.html' %}
-  <!-- <p><a href="{{url_for('editHomePage')}}">Edit Home Page</a></p> -->
-  <!-- TODO: do i want to add this back or remove it? -->
-  <article>
-    <h3>
-      <a href="{{url_for('newArticle')}}">New Article</a>
-    </h3>
-  </article>
-  {% if not articles %}
-    <p>
-      The article list is empty.
-    </p>
-  {% else %}
-    {% for article in articles %}
-      <article>
-        <a href="{{url_for('editArticle', article_id=article[0])}}">
-          <h2>{{article[1]}}</h2>
-          <!-- TODO: fix the author and photo, etc... along w/ home and archive -->
-          <!-- <p class="authorAndDate">{{article.author}}</p> -->
-          <p class="text">{{' '.join(article[6].split()[:30])}}...</p>
-        </a>
-      </article>
-    {% endfor %}
-  {% endif %}
+  {% include 'editHeader.html' %}
+  <section class="main">
+    {% if not articles %}
+      <p>
+        The article list is empty.
+      </p>
+    {% else %}
+      {% for article in articles %}
+        <article class="clearfix">
+          <a href="{{url_for('editArticle', article_id=article[0], editor='editor')}}">
+            {% if images[article[0]] %}
+              <section class="imageAndCaption">
+                <img class="article-image" alt="{{article[1]}}" src="{{images[article[0]][6]}}">
+                <p class="caption">{{images[article[0]][5]}}</p>
+              </section>
+            {% endif %}
+            <section class="text">
+              <h2>{{article[1]}}</h2>
+              {% if article[2] %}
+                <h3>{{article[2]}}</h3>
+              {% endif %}
+              <p class="authorAndDate">
+                {% if authors[article[0]] %}
+                  By {% for author in authors[article[0]] %}
+                    {{author[1]}} \
+                  {% endfor %}
+                {% endif %}
+                {{article[3]}}
+              </p>
+              <section>
+                {% if article[10] %}
+                  {{article[10]|safe}}
+                {% else %}
+                  {{' '.join(article[6].split()[:100])|safe}}...</p>
+                {% endif %}
+              </section>
+            </section>
+          </a>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </section>
 </body>
 </html>

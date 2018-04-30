@@ -27,7 +27,8 @@ def create_tables():
         on_home BOOLEAN DEFAULT 'f' NOT NULL,
         featured BOOLEAN DEFAULT 'f',
         priority INTEGER DEFAULT 0,
-        lead VARCHAR
+        lead VARCHAR,
+        is_hidden BOOLEAN DEFAULT 'f' NOT NULL
     )
     """,
     # TODO: Create index on articles (on_home)?
