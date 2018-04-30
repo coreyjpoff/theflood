@@ -70,8 +70,18 @@ def showArchive():
     )
 
 @app.route('/archive/<string:url_desc>/<int:article_id>')
-def showArticle(article_id, url_desc):
-    articleToShow = getArticle(article_id)
+def showArticle(article_id, url_desc, articleToShow=None):
+    if articleToShow is None:
+        articleToShow = getArticle(article_id)
+        print('__________________________')
+        print('id')
+        print(article_id)
+        print('url_desc')
+        print(url_desc)
+        print('__________________________')
+        print('third error or article: ')
+        print(articleToShow)
+        print('__________________________')
     image = getTitleImageForArticle(articleToShow[0])
     other_images = getNontitleImagesForArticle(articleToShow[0])
     authors = getAuthorsForArticle(articleToShow[0])
@@ -188,12 +198,21 @@ def showAdminInfo():
 def editArticle(article_id,editor):
     article = getArticle(article_id)
     authors = getAuthorsForArticle(article_id)
+    allAuthors = getAllAuthors()
     image = getTitleImageForArticle(article_id)
     other_images = getNontitleImagesForArticle(article_id)
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
-        saveExistingArticleFromForm(article, request.form)
+        error = saveExistingArticleFromForm(article, request.form)
+        print('__________________________')
+        print('first error: ')
+        print(error)
+        print('__________________________')
+        print('__________________________')
+        print('second error: ')
+        error = saveAuthorsForArticleFromForm(article[0], request.form)
+        print('__________________________')
         return redirect(url_for(
             'showArticle',
             article_id=article[0],
@@ -204,6 +223,7 @@ def editArticle(article_id,editor):
             'editArticleRaw.html',
             article=article,
             authors=authors,
+            allAuthors=allAuthors,
             image=image,
             other_images=other_images
         )
@@ -212,6 +232,7 @@ def editArticle(article_id,editor):
             'editArticle.html',
             article=article,
             authors=authors,
+            allAuthors=allAuthors,
             image=image,
             other_images=other_images
         )
@@ -220,18 +241,31 @@ def editArticle(article_id,editor):
 @app.route('/edit/new', methods=['GET', 'POST'])
 def newArticle():
     article = [-1,None,None,None,None,None,None,None,None,None]
+    authors = []
+    allAuthors = getAllAuthors()
+    image = []
+    other_images = []
     # TODO: handle the authors, pics, etc whatever i do in edit--can i combine these?
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
-        savedData = saveNewArticleFromForm(article, request.form)
+        data = saveNewArticleFromForm(article, request.form)
+        error = saveAuthorsForArticleFromForm(data[0], request.form)
         return redirect(url_for(
             'showArticle',
-            article_id=savedData[0],
-            url_desc='newart'
+            article_id=data[0],
+            url_desc=data[5],
+            articleToShow=data
         ))
     else:
-        return render_template('editArticle.html', article=article)
+        return render_template(
+            'editArticle.html',
+            article=article,
+            authors=authors,
+            allAuthors=allAuthors,
+            image=image,
+            other_images=other_images
+        )
         
 @app.route('/edit/authors/')
 def editAuthorsHome():
@@ -287,19 +321,22 @@ def getAllArticles(on_home=False):
         cur.execute(sql)
         articles = cur.fetchall()
         return articles
-    except:
-        return None
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getArticle(article_id):
+    print('inside: ' + str(article_id))
     try:
         sql = """
             SELECT * FROM article a
             WHERE a.id = %s; """ % str(article_id)
         cur.execute(sql)
         article = cur.fetchone()
+        print('article: ')
+        print(article)
         return article
-    except:
-        return None
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def saveExistingArticleFromForm(article, form):
     article = getArticleDataFromForm(article, form)
@@ -321,8 +358,8 @@ def saveNewArticleFromForm(article, form):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *;"""
         data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10])
         cur.execute(sql, data)
-        savedData = cur.fetchone()
         conn.commit()
+        savedData = cur.fetchone()
         return savedData
     except (Exception, psycopg2.DatabaseError) as error:
         return error
@@ -351,17 +388,68 @@ def getArticleDataFromForm(article, form):
     if form.get('issue'):
         issue = form['issue']
     else:
-        issue = ''
+        issue = 0
     if form.get('priority'):
         priority = form.get('priority')
     else:
-        priority = ''
+        priority = 0
     if form.get('lead'):
         lead = form.get('lead')
     else:
         lead = ''
+    if form.get('on_home'):
+        on_home = form['on_home']
+    else:
+        on_home = False
+    if form.get('featured'):
+        featured = form['featured']
+    else:
+        featured = False
     return [article[0], title, subtitle, article[3], issue, url_desc,
-        html_text, form.get('on_home'), form.get('featured'), priority, lead]
+        html_text, on_home, featured, priority, lead]
+        
+def saveAuthorsForArticleFromForm(article_id, form):
+    newAuthorsIds = form.getlist('authors')
+    print('__________________________')
+    print('before delete: ')
+    print(article_id)
+    print('__________________________')
+    deleted = deleteAllOldAuthorsForArticle(article_id)
+    print('__________________________')
+    print('after delete: ')
+    print(deleted)
+    print('__________________________')
+    newAuthor = None
+    error = ''
+    for newAuthorId in newAuthorsIds:
+        error = saveNewAuthorForArticle(article_id, newAuthorId)
+        print('loop: ')
+        print(error)
+    return error
+            
+def deleteAllOldAuthorsForArticle(article_id):
+    try:
+        print('__________________________')
+        print('string article_id: ')
+        print(str(article_id))
+        print('__________________________')
+        sql = """DELETE FROM article_author
+            WHERE article_id=%s; """
+        cur.execute(sql, (str(article_id),))
+        conn.commit()
+        return ''
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
+    
+def saveNewAuthorForArticle(article_id, author_id):
+    try:
+        sql = """INSERT INTO article_author (article_id, author_id)
+            VALUES (%s, %s); """
+        cur.execute(sql, (str(article_id), str(author_id)))
+        conn.commit()
+        return ''
+    except (Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def saveNewAuthorFromForm(author, form):
     author = getAuthorDataFromForm(author, form)
@@ -431,7 +519,7 @@ def findSubscriber(email):
 def getAuthorsForArticle(article_id):
     try:
         sql = """
-            SELECT * FROM author a
+        SELECT a.id, a.name, a.bio FROM author a
             JOIN article_author aa
             ON a.id = aa.author_id
             WHERE aa.article_id = %s; """ % str(article_id)

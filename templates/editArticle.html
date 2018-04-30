@@ -69,6 +69,16 @@
           {% endif %}
           <label>Subtitle</label>
           <input type='text' size='50' name='subtitle' value='{{article[2]}}'>
+          <label>Authors</label>
+          <select name='authors' size='5' multiple>
+            {% for author in allAuthors %}
+              {% if author in authors %}
+                <option value='{{author[0]}}' selected>{{author[1]}}</option>
+              {% else %}
+                <option value='{{author[0]}}'>{{author[1]}}</option>
+              {% endif %}
+            {% endfor %}
+          </option>
           <label>Issue</label>
           <input type='number' name='issue' value='{{article[4]}}'>
           <label>Priority</label>
