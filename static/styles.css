@@ -85,7 +85,7 @@ header {
   }
   
   a.header-title img {
-    width: 35%;
+    width: 60%;
     max-width: 600px;
   }
   
@@ -94,9 +94,9 @@ header {
   }
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 1150px) {
   a.header-title img {
-    width: 30%;
+    width: 50%;
     max-width: 1017px;
   }
 }

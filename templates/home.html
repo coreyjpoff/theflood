@@ -22,6 +22,7 @@
       {% for article in articles %}
         {% if article[8] %}
           <article class="featured">
+          {% if count.append(count.pop() * 0) %}{% endif %}
         {% else %}
           {% if count.append(count.pop() + 1) %}{% endif %}
           {% if count[0] % 2 == 1 %}

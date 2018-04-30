@@ -73,15 +73,6 @@ def showArchive():
 def showArticle(article_id, url_desc, articleToShow=None):
     if articleToShow is None:
         articleToShow = getArticle(article_id)
-        print('__________________________')
-        print('id')
-        print(article_id)
-        print('url_desc')
-        print(url_desc)
-        print('__________________________')
-        print('third error or article: ')
-        print(articleToShow)
-        print('__________________________')
     image = getTitleImageForArticle(articleToShow[0])
     other_images = getNontitleImagesForArticle(articleToShow[0])
     authors = getAuthorsForArticle(articleToShow[0])
@@ -205,14 +196,7 @@ def editArticle(article_id,editor):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
         error = saveExistingArticleFromForm(article, request.form)
-        print('__________________________')
-        print('first error: ')
-        print(error)
-        print('__________________________')
-        print('__________________________')
-        print('second error: ')
         error = saveAuthorsForArticleFromForm(article[0], request.form)
-        print('__________________________')
         return redirect(url_for(
             'showArticle',
             article_id=article[0],
@@ -325,15 +309,12 @@ def getAllArticles(on_home=False):
         return error
 
 def getArticle(article_id):
-    print('inside: ' + str(article_id))
     try:
         sql = """
             SELECT * FROM article a
             WHERE a.id = %s; """ % str(article_id)
         cur.execute(sql)
         article = cur.fetchone()
-        print('article: ')
-        print(article)
         return article
     except (Exception, psycopg2.DatabaseError) as error:
         return error
@@ -410,29 +391,15 @@ def getArticleDataFromForm(article, form):
         
 def saveAuthorsForArticleFromForm(article_id, form):
     newAuthorsIds = form.getlist('authors')
-    print('__________________________')
-    print('before delete: ')
-    print(article_id)
-    print('__________________________')
     deleted = deleteAllOldAuthorsForArticle(article_id)
-    print('__________________________')
-    print('after delete: ')
-    print(deleted)
-    print('__________________________')
     newAuthor = None
     error = ''
     for newAuthorId in newAuthorsIds:
         error = saveNewAuthorForArticle(article_id, newAuthorId)
-        print('loop: ')
-        print(error)
     return error
             
 def deleteAllOldAuthorsForArticle(article_id):
     try:
-        print('__________________________')
-        print('string article_id: ')
-        print(str(article_id))
-        print('__________________________')
         sql = """DELETE FROM article_author
             WHERE article_id=%s; """
         cur.execute(sql, (str(article_id),))
