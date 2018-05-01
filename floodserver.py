@@ -224,7 +224,7 @@ def editArticle(article_id,editor):
 # XCJP check login
 @app.route('/edit/new', methods=['GET', 'POST'])
 def newArticle():
-    article = [-1,None,None,None,None,None,None,None,None,None]
+    article = [-1,'','',None,None,'','',True,False,0,'',False]
     authors = []
     allAuthors = getAllAuthors()
     image = []
@@ -392,6 +392,8 @@ def getArticleDataFromForm(article, form):
 def saveAuthorsForArticleFromForm(article_id, form):
     newAuthorsIds = form.getlist('authors')
     deleted = deleteAllOldAuthorsForArticle(article_id)
+    if newAuthorsIds and newAuthorsIds[0] == '-1':
+        return ''
     newAuthor = None
     error = ''
     for newAuthorId in newAuthorsIds:

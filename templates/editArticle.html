@@ -55,13 +55,13 @@
         <form action="#" method="post">
           <label>Title</label>
           <input type='text' size='50' name='title' value='{{article[1]}}'>
-          <label>Is on home page</label>
+          <label>Is on home page (otherwise it's just in the archive)</label>
           {% if article[7] %}
             <input type='checkbox' name='on_home' checked>
           {% else %}
             <input type='checkbox' name='on_home'>
           {% endif %}
-          <label>Is featured</label>
+          <label>Takes up whole width on home page (otherwise takes up half)</label>
           {% if article[8] %}
             <input type='checkbox' name='featured' checked>
           {% else %}
@@ -69,8 +69,9 @@
           {% endif %}
           <label>Subtitle</label>
           <input type='text' size='50' name='subtitle' value='{{article[2]}}'>
-          <label>Authors</label>
+          <label>Authors (hold ctl to select multiple)</label>
           <select name='authors' size='5' multiple>
+            <option value='-1'>None</option>
             {% for author in allAuthors %}
               {% if author in authors %}
                 <option value='{{author[0]}}' selected>{{author[1]}}</option>
@@ -78,7 +79,7 @@
                 <option value='{{author[0]}}'>{{author[1]}}</option>
               {% endif %}
             {% endfor %}
-          </option>
+          </select>
           <label>Issue</label>
           <input type='number' name='issue' value='{{article[4]}}'>
           <label>Priority</label>
@@ -115,8 +116,6 @@
               </p>
             </li>
           </ul>
-          <label>Authors</label>
-          <!-- TODO: add authors, upload photos, etc -->
           <input type='submit' value='Save and View'>
           <a href="{{url_for('showEditorHome')}}">Cancel</a>
           <a <a href="{{url_for('editArticle', article_id=article[0], editor='raw')}}">View raw html text (changes will be discarded)</a>
