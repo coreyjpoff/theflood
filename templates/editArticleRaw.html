@@ -86,7 +86,9 @@
           {% else %}
             <textarea rows='10' cols='100' name='html_text'></textarea>
           {% endif %}
-          <label>Lead in</label>
+          <label>Home page/archive blurb--if blank, the first 50 to 100 words will be used automatically;
+          this can be used to resolve formatting issues that happen when the blurb cuts off in the midds of a
+          hyperlink or something</label>
           {% if article[10] %}
             <textarea rows='10' cols='100' name='lead'>{{article[10]}}</textarea>
           {% else %}
@@ -96,20 +98,6 @@
           <ul>
             <li>
               <p>
-                {% raw %}
-                  For a pull quote, use a new paragraph and type
-                  {{pull: "Your quote"}}, including the squiggly lines
-                  and quotes--make sure this is its own paragraph
-                {% endraw %}
-              </p>
-            </li>
-            <li>
-              <p>
-                {% raw %}
-                  For an footnote, immediately after the word or punctuation it
-                  should appear (no spaces or new lines), use
-                  {{foot: "Your footnote"}}--this should be within a paragraph
-                {% endraw %}
               </p>
             </li>
           </ul>
