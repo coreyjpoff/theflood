@@ -15,11 +15,15 @@ from sqlalchemy import create_engine, and_, desc
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import psycopg2
+from werkzeug.utils import secure_filename
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
+UPLOAD_FOLDER = '/static/articles/'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 conn = psycopg2.connect(database="flood", user="flood", password="flood")
 cur = conn.cursor()
@@ -41,7 +45,7 @@ FOOTNOTE = 'FOOTNOTE'
 @app.route('/home/')
 @app.route('/')
 def showHome():
-    articles = getAllArticles(True)
+    articles = getAllArticles(True, False)
     authors = {}
     images = {}
     for article in articles:
@@ -56,7 +60,7 @@ def showHome():
 
 @app.route('/archive/')
 def showArchive():
-    articles = getAllArticles()
+    articles = getAllArticles(False, False)
     authors = {}
     images = {}
     for article in articles:
@@ -72,7 +76,7 @@ def showArchive():
 @app.route('/archive/<string:url_desc>/<int:article_id>')
 def showArticle(article_id, url_desc, articleToShow=None):
     if articleToShow is None:
-        articleToShow = getArticle(article_id)
+        articleToShow = getArticle(article_id, False)
     image = getTitleImageForArticle(articleToShow[0])
     other_images = getNontitleImagesForArticle(articleToShow[0])
     authors = getAuthorsForArticle(articleToShow[0])
@@ -164,7 +168,7 @@ def logout():
 def showEditorHome():
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
-    articles = getAllArticles()
+    articles = getAllArticles(False, True)
     authors = {}
     images = {}
     for article in articles:
@@ -174,7 +178,7 @@ def showEditorHome():
         'edit.html',
         articles=articles,
         authors=authors,
-        images=images
+        images=images,
     )
 
 # XCJP implement or delete
@@ -187,7 +191,7 @@ def showAdminInfo():
 # XCJP check login
 @app.route('/edit/<string:editor>/<int:article_id>', methods=['GET', 'POST'])
 def editArticle(article_id,editor):
-    article = getArticle(article_id)
+    article = getArticle(article_id, True)
     authors = getAuthorsForArticle(article_id)
     allAuthors = getAllAuthors()
     image = getTitleImageForArticle(article_id)
@@ -197,29 +201,27 @@ def editArticle(article_id,editor):
     if request.method == 'POST':
         error = saveExistingArticleFromForm(article, request.form)
         error = saveAuthorsForArticleFromForm(article[0], request.form)
-        return redirect(url_for(
-            'showArticle',
-            article_id=article[0],
-            url_desc=article[5],
-        ))
+        if request.form.get('is_hidden') and request.form['is_hidden']:
+            return redirect(url_for('showEditorHome'))
+        else:
+            return redirect(url_for(
+                'showArticle',
+                article_id=article[0],
+                url_desc=article[5],
+            ))
     elif editor == 'raw':
-        return render_template(
-            'editArticleRaw.html',
-            article=article,
-            authors=authors,
-            allAuthors=allAuthors,
-            image=image,
-            other_images=other_images
-        )
+        isRawText = True
     else:
-        return render_template(
-            'editArticle.html',
-            article=article,
-            authors=authors,
-            allAuthors=allAuthors,
-            image=image,
-            other_images=other_images
-        )
+        isRawText = False
+    return render_template(
+        'editArticle.html',
+        article=article,
+        authors=authors,
+        allAuthors=allAuthors,
+        image=image,
+        other_images=other_images,
+        isRawText = isRawText
+    )
 
 # XCJP check login
 @app.route('/edit/new', methods=['GET', 'POST'])
@@ -250,12 +252,12 @@ def newArticle():
             image=image,
             other_images=other_images
         )
-        
+
 @app.route('/edit/authors/')
 def editAuthorsHome():
     authors = getAllAuthors()
     return render_template('editAuthors.html', authors=authors)
-    
+
 @app.route('/edit/authors/<int:auth_id>/', methods=['GET', 'POST'])
 def editAuthor(auth_id):
     author = getAuthor(auth_id)
@@ -264,7 +266,7 @@ def editAuthor(auth_id):
         return redirect(url_for('editAuthorsHome'))
     else:
         return render_template('editAuthor.html', author=author)
-    
+
 @app.route('/edit/authors/new/', methods=['GET', 'POST'])
 def newAuthor():
     author = [-1, None, None]
@@ -292,27 +294,70 @@ def showEmailList():
     except:
         return redirect(url_for('showHome'))
 
+# XCJP check login
+@app.route('/edit/upload/<int:article_id>', methods=['GET', 'POST'])
+def uploadFiles(article_id):
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('File not sent')
+            return redirect(url_for('showEditorHome'))
+        file = request.files['file']
+        if file.filename == '':
+            flash('No file selected')
+            return redirect(url_for('showEditorHome'))
+        if file and allowedFile(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = app.config['UPLOAD_FOLDER'] + str(article_id) + '/'
+            relativePath = '.' + filepath
+            if not os.path.isdir(relativePath):
+                os.makedirs(relativePath)
+            file.save(os.path.join(relativePath, filename))
+            article = getArticle(article_id, True)
+            saveArticleResourceFromForm(article_id, request.form, filename, filepath)
+            return redirect(url_for(
+                'showArticle',
+                article_id=article[0],
+                url_desc=article[5],
+            ))
+    else:
+        return render_template('uploadFiles.html')
+
 # helper functions
-def getAllArticles(on_home=False):
+def getAllArticles(on_home=False, include_hidden=False):
     try:
-        if on_home:
-            sql = """SELECT * FROM article
-                WHERE on_home = 't'
-                ORDER BY priority DESC, id ASC; """
+        if not include_hidden:
+            if on_home:
+                sql = """SELECT * FROM article
+                    WHERE on_home = 't' AND is_hidden = 'f'
+                    ORDER BY priority DESC, id ASC; """
+            else:
+                sql = """SELECT * FROM article
+                    WHERE is_hidden = 'f'
+                    ORDER BY priority DESC, id ASC; """
         else:
-            sql = """SELECT * FROM article
-                ORDER BY priority DESC, id ASC; """
+            if on_home:
+                sql = """SELECT * FROM article
+                    WHERE on_home = 't'
+                    ORDER BY priority DESC, id ASC; """
+            else:
+                sql = """SELECT * FROM article
+                    ORDER BY priority DESC, id ASC; """
         cur.execute(sql)
         articles = cur.fetchall()
         return articles
     except (Exception, psycopg2.DatabaseError) as error:
         return error
 
-def getArticle(article_id):
+def getArticle(article_id, allow_hidden):
     try:
-        sql = """
-            SELECT * FROM article a
-            WHERE a.id = %s; """ % str(article_id)
+        if allow_hidden:
+            sql = """
+                SELECT * FROM article a
+                WHERE a.id = %s; """ % str(article_id)
+        else:
+            sql = """
+                SELECT * FROM article a
+                WHERE a.id = %s AND a.is_hidden = 'f'; """ % str(article_id)
         cur.execute(sql)
         article = cur.fetchone()
         return article
@@ -322,29 +367,30 @@ def getArticle(article_id):
 def saveExistingArticleFromForm(article, form):
     article = getArticleDataFromForm(article, form)
     try:
-        sql = """UPDATE article SET (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead)
-            =(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        sql = """UPDATE article SET (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead,is_hidden)
+            =(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             WHERE id=%s; """
-        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10], article[0])
+        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10], article[11], article[0])
         cur.execute(sql, data)
         conn.commit()
         return ''
     except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
         return error
 
 def saveNewArticleFromForm(article, form):
     article = getArticleDataFromForm(article, form)
     try:
-        sql = """INSERT INTO article (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *;"""
-        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10])
+        sql = """INSERT INTO article (title,subtitle,issue,url_desc,html_text,on_home,featured,priority,lead,is_hidden)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *;"""
+        data = (article[1], article[2], article[4], article[5], article[6], article[7], article[8], article[9], article[10],article[11])
         cur.execute(sql, data)
         conn.commit()
         savedData = cur.fetchone()
         return savedData
     except (Exception, psycopg2.DatabaseError) as error:
         return error
-    
+
 def getArticleDataFromForm(article, form):
     if form.get('title'):
         title = form['title']
@@ -386,9 +432,13 @@ def getArticleDataFromForm(article, form):
         featured = form['featured']
     else:
         featured = False
+    if form.get('is_hidden'):
+        is_hidden = form['is_hidden']
+    else:
+        is_hidden = False
     return [article[0], title, subtitle, article[3], issue, url_desc,
-        html_text, on_home, featured, priority, lead]
-        
+        html_text, on_home, featured, priority, lead, is_hidden]
+
 def saveAuthorsForArticleFromForm(article_id, form):
     newAuthorsIds = form.getlist('authors')
     deleted = deleteAllOldAuthorsForArticle(article_id)
@@ -399,7 +449,7 @@ def saveAuthorsForArticleFromForm(article_id, form):
     for newAuthorId in newAuthorsIds:
         error = saveNewAuthorForArticle(article_id, newAuthorId)
     return error
-            
+
 def deleteAllOldAuthorsForArticle(article_id):
     try:
         sql = """DELETE FROM article_author
@@ -409,7 +459,7 @@ def deleteAllOldAuthorsForArticle(article_id):
         return ''
     except (Exception, psycopg2.DatabaseError) as error:
         return error
-    
+
 def saveNewAuthorForArticle(article_id, author_id):
     try:
         sql = """INSERT INTO article_author (article_id, author_id)
@@ -433,6 +483,17 @@ def saveNewAuthorFromForm(author, form):
     except (Exception, psycopg2.DatabaseError) as error:
         return error
 
+def getAuthorDataFromForm(author, form):
+    if form.get('name'):
+        name = form['name']
+    else:
+        name = ''
+    if form.get('bio'):
+        bio = form['bio']
+    else:
+        bio = ''
+    return [author[0], name, bio]
+
 def saveExistingAuthorFromForm(author, form):
     author = getAuthorDataFromForm(author, form)
     try:
@@ -445,19 +506,22 @@ def saveExistingAuthorFromForm(author, form):
         return savedData
     except (Exception, psycopg2.DatabaseError) as error:
         return error
-    
 
-def getAuthorDataFromForm(author, form):
-    if form.get('name'):
-        name = form['name']
-    else:
-        name = ''
-    if form.get('bio'):
-        bio = form['bio']
-    else:
-        bio = ''
-    return [author[0], name, bio]
-    
+def saveArticleResourceFromForm(article_id, form, filename, filepath):
+    resource = getResourceData(article_id, form)
+    try:
+        sql = """INSERT INTO article_resource (name,article_id,resource_type,is_title_img,caption,resource_location)
+            VALUES (%s, %s, %s, %s, %s, %s);"""
+        data = (filename, article_id, resource[0], resource[1], resource[2], filepath + filename)
+        cur.execute(sql, data)
+        conn.commit()
+        return ''
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
+
+def getResourceData(article_id, form):
+    return ['JPG', True, 'IS THIS YOUR TEST?!?']
+
 # XCJP add some email verification
 def saveSubscriberFromForm(form):
     if not form.get('name'):
@@ -506,7 +570,7 @@ def getAllAuthors():
         return authors
     except:
         return None
-        
+
 def getAuthor(auth_id):
     try:
         sql = """SELECT * FROM author
@@ -542,6 +606,9 @@ def getNontitleImagesForArticle(article_id):
     except:
         return None
 
+def allowedFile(filename):
+    return '.' in filename and \
+    filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def parseTextElements(article_text, image_list):
     # article_text = re.split(r'\{\{(img|break|foot)?(: ([0-9]+|[a-zA-Z]+)\}\}')

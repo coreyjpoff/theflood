@@ -5,9 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Flood</title>
-  <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=23526fpfqgaeyll6amw1a0xi473w9n58d85cpyjzwsen70s3">
-  </script>
-  <script>tinymce.init({ selector:'textarea' });</script>
+  {% if not isRawText %}
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=23526fpfqgaeyll6amw1a0xi473w9n58d85cpyjzwsen70s3">
+    </script>
+    <script>tinymce.init({ selector:'textarea' });</script>
+  {% endif %}
   <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='article.css')}}">
@@ -47,14 +49,21 @@
             {% for img in other_images %}
               <img alt="{{img[5]}}" src="{{img[6]}}">
             {% endfor %}
-          </section
+          </section>
           <p></p>
         {% endif %}
       </h3>
+      <a href="{{url_for('uploadFiles', article_id=article[0])}}">Add images or audio (unsaved changes will be discarded)</a>
       <section class="text">
         <form action="#" method="post">
           <label>Title</label>
           <input type='text' size='50' name='title' value='{{article[1]}}'>
+          <label>Is hidden (essentially, is deleted)</label>
+          {% if article[11] %}
+            <input type='checkbox' name='is_hidden' checked>
+          {% else %}
+            <input type='checkbox' name='is_hidden'>
+          {% endif %}
           <label>Is on home page (otherwise it's just in the archive)</label>
           {% if article[7] %}
             <input type='checkbox' name='on_home' checked>
@@ -82,15 +91,20 @@
           </select>
           <label>Issue</label>
           <input type='number' name='issue' value='{{article[4]}}'>
-          <label>Priority</label>
+          <label>Priority (higher value means article is higher up on home page and archive)</label>
           <input type='number' name='priority' value='{{article[9]}}'>
+          {% if article[0] != -1 and not isRawText %}
+            <a href="{{url_for('editArticle', article_id=article[0], editor='raw')}}">View raw html text (unsaved changes will be discarded)</a>
+          {% elif isRawText %}
+            <a href="{{url_for('editArticle', article_id=article[0], editor='editor')}}">Go back to formatted editor text (unsaved changes will be discarded)</a>
+          {% endif %}
           {% if article[6] %}
             <textarea rows='50' cols='100' name='html_text'>{{article[6]}}</textarea>
           {% else %}
-            <textarea rows='10' cols='100' name='html_text'></textarea>
+            <textarea rows='50' cols='100' name='html_text'></textarea>
           {% endif %}
           <label>Home page/archive blurb--if blank, the first 50 to 100 words will be used automatically;
-          this can be used to resolve formatting issues that happen when the blurb cuts off in the midds of a
+          this can be used to resolve formatting issues that happen when the blurb cuts off in the middle of a
           hyperlink or something</label>
           {% if article[10] %}
             <textarea rows='10' cols='100' name='lead'>{{article[10]}}</textarea>
@@ -106,9 +120,6 @@
           </ul>
           <input type='submit' value='Save and View'>
           <a href="{{url_for('showEditorHome')}}">Cancel</a>
-          {% if article[0] != -1 %}
-            <a <a href="{{url_for('editArticle', article_id=article[0], editor='raw')}}">View raw html text (changes will be discarded)</a>
-          {% endif %}
         </form>
       </section>
     </p>
