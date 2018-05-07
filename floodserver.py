@@ -21,7 +21,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'home/flood/theflood/static/articles/'
+UPLOAD_FOLDER = '/home/flood/theflood/static/articles/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
