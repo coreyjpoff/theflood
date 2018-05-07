@@ -21,7 +21,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
-UPLOAD_FOLDER = '/static/articles/'
+UPLOAD_FOLDER = 'home/flood/theflood/static/articles/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -307,10 +307,9 @@ def uploadFiles(article_id, type):
             filepath = app.config['UPLOAD_FOLDER'] + str(article_id) + '/'
             if type == 'audio':
                 filepath = filepath + 'audio/'
-            relativePath = '.' + filepath
-            if not os.path.isdir(relativePath):
-                os.makedirs(relativePath)
-            file.save(os.path.join(relativePath, filename))
+            if not os.path.isdir(filepath):
+                os.makedirs(filepath)
+            file.save(os.path.join(filepath, filename))
             article = getArticle(article_id, True)
             saveArticleResourceFromForm(article_id, request.form, filename, filepath, type)
             return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
@@ -333,12 +332,9 @@ def deleteResource(id, article_id):
         sql = """DELETE FROM article_resource WHERE id=%s; """
         cur.execute(sql, (str(id),))
         conn.commit()
-        relativePath = '.' + str(path)
-        print(path)
-        os.remove(relativePath)
+        os.remove(str(path))
         return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
         return error
 
 # helper functions
