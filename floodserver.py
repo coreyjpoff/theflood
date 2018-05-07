@@ -22,7 +22,7 @@ sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
 UPLOAD_FOLDER = '/static/articles/'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 conn = psycopg2.connect(database="flood", user="flood", password="flood")
@@ -77,20 +77,17 @@ def showArchive():
 def showArticle(article_id, url_desc, articleToShow=None):
     if articleToShow is None:
         articleToShow = getArticle(article_id, False)
+    if articleToShow is None:
+        return redirect(url_for('showHome'))
     image = getTitleImageForArticle(articleToShow[0])
-    other_images = getNontitleImagesForArticle(articleToShow[0])
+    other_files = getNontitleImagesForArticle(articleToShow[0])
     authors = getAuthorsForArticle(articleToShow[0])
-    # articleToShow.html_text = parseTextElements(
-    #     articleToShow.html_text,
-    #     other_images
-    # )
-    # TODO: finish this or take it out
     return render_template(
         'article.html',
         article=articleToShow,
         authors=authors,
         image=image,
-        other_images=other_images
+        other_files=other_files
     )
 
 @app.route('/about')
@@ -195,7 +192,7 @@ def editArticle(article_id,editor):
     authors = getAuthorsForArticle(article_id)
     allAuthors = getAllAuthors()
     image = getTitleImageForArticle(article_id)
-    other_images = getNontitleImagesForArticle(article_id)
+    other_files = getNontitleImagesForArticle(article_id)
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
     if request.method == 'POST':
@@ -219,7 +216,7 @@ def editArticle(article_id,editor):
         authors=authors,
         allAuthors=allAuthors,
         image=image,
-        other_images=other_images,
+        other_files=other_files,
         isRawText = isRawText
     )
 
@@ -230,7 +227,7 @@ def newArticle():
     authors = []
     allAuthors = getAllAuthors()
     image = []
-    other_images = []
+    other_files = []
     # TODO: handle the authors, pics, etc whatever i do in edit--can i combine these?
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
@@ -250,7 +247,7 @@ def newArticle():
             authors=authors,
             allAuthors=allAuthors,
             image=image,
-            other_images=other_images
+            other_files=other_files
         )
 
 @app.route('/edit/authors/')
@@ -291,12 +288,12 @@ def showEmailList():
         cur.execute(sql)
         emailList = cur.fetchall()
         return render_template('showEmailList.html', emailList=emailList)
-    except:
-        return redirect(url_for('showHome'))
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 # XCJP check login
-@app.route('/edit/upload/<int:article_id>', methods=['GET', 'POST'])
-def uploadFiles(article_id):
+@app.route('/edit/upload/<int:article_id>/<string:type>', methods=['GET', 'POST'])
+def uploadFiles(article_id, type):
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('File not sent')
@@ -308,19 +305,41 @@ def uploadFiles(article_id):
         if file and allowedFile(file.filename):
             filename = secure_filename(file.filename)
             filepath = app.config['UPLOAD_FOLDER'] + str(article_id) + '/'
+            if type == 'audio':
+                filepath = filepath + 'audio/'
             relativePath = '.' + filepath
             if not os.path.isdir(relativePath):
                 os.makedirs(relativePath)
             file.save(os.path.join(relativePath, filename))
             article = getArticle(article_id, True)
-            saveArticleResourceFromForm(article_id, request.form, filename, filepath)
-            return redirect(url_for(
-                'showArticle',
-                article_id=article[0],
-                url_desc=article[5],
-            ))
+            saveArticleResourceFromForm(article_id, request.form, filename, filepath, type)
+            return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
+        else:
+            return render_template('uploadFiles.html', article_id=article_id, type=type)
     else:
-        return render_template('uploadFiles.html')
+        return render_template('uploadFiles.html', article_id=article_id, type=type)
+        # XCJP here for deleting resource
+        # article_resources = getAllResourcesForArticle(article_id)
+        #     article_resources = article_resources
+        # )
+
+# XCJP update this to avoid using get method
+@app.route('/edit/delete/resource/<int:id>/<int:article_id>')
+def deleteResource(id, article_id):
+    try:
+        sql = """SELECT resource_location FROM article_resource WHERE id=%s;"""
+        cur.execute(sql, (str(id),))
+        path = cur.fetchone()[0]
+        sql = """DELETE FROM article_resource WHERE id=%s; """
+        cur.execute(sql, (str(id),))
+        conn.commit()
+        relativePath = '.' + str(path)
+        print(path)
+        os.remove(relativePath)
+        return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return error
 
 # helper functions
 def getAllArticles(on_home=False, include_hidden=False):
@@ -375,7 +394,6 @@ def saveExistingArticleFromForm(article, form):
         conn.commit()
         return ''
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
         return error
 
 def saveNewArticleFromForm(article, form):
@@ -507,12 +525,12 @@ def saveExistingAuthorFromForm(author, form):
     except (Exception, psycopg2.DatabaseError) as error:
         return error
 
-def saveArticleResourceFromForm(article_id, form, filename, filepath):
+def saveArticleResourceFromForm(article_id, form, filename, filepath, resource_type):
     resource = getResourceData(article_id, form)
     try:
         sql = """INSERT INTO article_resource (name,article_id,resource_type,is_title_img,caption,resource_location)
             VALUES (%s, %s, %s, %s, %s, %s);"""
-        data = (filename, article_id, resource[0], resource[1], resource[2], filepath + filename)
+        data = (filename, article_id, resource_type, resource[0], resource[1], filepath + filename)
         cur.execute(sql, data)
         conn.commit()
         return ''
@@ -520,7 +538,26 @@ def saveArticleResourceFromForm(article_id, form, filename, filepath):
         return error
 
 def getResourceData(article_id, form):
-    return ['JPG', True, 'IS THIS YOUR TEST?!?']
+    if form.get('is_title_img'):
+        is_title_img = form['is_title_img']
+    else:
+        is_title_img = False
+    if form.get('caption'):
+        caption = form['caption']
+    else:
+         caption = ''
+    return [is_title_img, caption]
+
+def getAllResourcesForArticle(article_id):
+    try:
+        sql = """
+        SELECT * FROM author
+        WHERE article_id = %s; """ % str(article_id)
+        cur.execute(sql)
+        article_resources = cur.fetchall()
+        return article_resources
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 # XCJP add some email verification
 def saveSubscriberFromForm(form):
@@ -546,8 +583,8 @@ def findSubscriber(email):
             WHERE s.email_address = '%s'; """ % email
         cur.execute(sql)
         return cur.fetchone()
-    except:
-        return None
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getAuthorsForArticle(article_id):
     try:
@@ -559,8 +596,8 @@ def getAuthorsForArticle(article_id):
         cur.execute(sql)
         authors = cur.fetchall()
         return authors
-    except:
-        return None
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getAllAuthors():
     try:
@@ -568,8 +605,8 @@ def getAllAuthors():
         cur.execute(sql)
         authors = cur.fetchall()
         return authors
-    except:
-        return None
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getAuthor(auth_id):
     try:
@@ -578,8 +615,8 @@ def getAuthor(auth_id):
         cur.execute(sql, str(auth_id))
         author = cur.fetchone()
         return author
-    except:
-        return None
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getTitleImageForArticle(article_id):
     try:
@@ -590,9 +627,8 @@ def getTitleImageForArticle(article_id):
         cur.execute(sql)
         image = cur.fetchone()
         return image
-    except:
-        return None
-
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def getNontitleImagesForArticle(article_id):
     try:
@@ -603,8 +639,8 @@ def getNontitleImagesForArticle(article_id):
         cur.execute(sql)
         images = cur.fetchall()
         return images
-    except:
-        return None
+    except(Exception, psycopg2.DatabaseError) as error:
+        return error
 
 def allowedFile(filename):
     return '.' in filename and \

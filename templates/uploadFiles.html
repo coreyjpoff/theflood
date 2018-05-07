@@ -15,7 +15,14 @@
   <article>
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
+      {% if type == 'image' %}
+        <label>Is title image</label>
+        <input type='checkbox' name='is_title_img'>
+      {% endif %}
+      <label>Caption</label>
+      <textarea rows='10' cols='100' name='caption'></textarea>
       <input type=submit value=Upload>
+      <a href="{{url_for('editArticle', article_id=article_id, editor='editor')}}">Cancel</a>
   </article>
 </body>
 </html>

@@ -34,10 +34,19 @@
         {% endif %}
         {{article[3]}}
       </h3>
-      {% if other_images %}
+      {% if other_files %}
         <section class="article-image">
-          {% for img in other_images %}
-            <img alt="{{img[5]}}" src="{{img[6]}}">
+          {% for file in other_files %}
+            {% if file[3] == 'audio' %}
+            <audio controls>
+              <source src="{{file[6]}}" type="audio/wav">
+              <source src="{{file[6]}}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+            {% else %}
+              <img alt="{{file[1]}}" src="{{file[6]}}">
+            {% endif %}
+            <span class="caption">{{file[5]}}</span>
           {% endfor %}
         </section
         <p></p>

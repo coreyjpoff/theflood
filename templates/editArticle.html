@@ -22,6 +22,7 @@
       <section class="header-image">
         <img alt="{{article[1]}}" src="{{image[6]}}">
         <span class="caption">{{image[5]}}</span>
+        <a href="{{url_for('deleteResource', id=image[0], article_id=image[2])}}">Delete image</a>
       </section>
     {% endif %}
     <section class="text">
@@ -44,16 +45,29 @@
         {% if article[3] %}
           First published on {{article[3]}}
         {% endif %}
-        {% if other_images %}
-          <section class="article-image">
-            {% for img in other_images %}
-              <img alt="{{img[5]}}" src="{{img[6]}}">
-            {% endfor %}
-          </section>
-          <p></p>
-        {% endif %}
       </h3>
-      <a href="{{url_for('uploadFiles', article_id=article[0])}}">Add images or audio (unsaved changes will be discarded)</a>
+      {% if other_files %}
+        <section class="article-image">
+          {% for file in other_files %}
+            {% if file[3] == 'audio' %}
+              <audio controls>
+                <source src="{{file[6]}}" type="audio/wav">
+                <source src="{{file[6]}}" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+              <a href="{{url_for('deleteResource', id=file[0], article_id = file[2])}}">Delete audio file</a>
+            {% else %}
+              <img alt="{{file[1]}}" src="{{file[6]}}">
+              <a href="{{url_for('deleteResource', id=file[0], article_id = file[2])}}">Delete image</a>
+            {% endif %}
+            <span class="caption">{{file[5]}}</span>
+          {% endfor %}
+        </section>
+        <p></p>
+      {% endif %}
+      <a href="{{url_for('uploadFiles', article_id=article[0], type='image')}}">Add images(unsaved changes will be discarded)</a>
+      <p></p>
+      <a href="{{url_for('uploadFiles', article_id=article[0], type='audio')}}">Add audio (unsaved changes will be discarded)</a>
       <section class="text">
         <form action="#" method="post">
           <label>Title</label>
