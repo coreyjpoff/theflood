@@ -306,13 +306,16 @@ def uploadFiles(article_id, type):
         if file and allowedFile(file.filename):
             filename = secure_filename(file.filename)
             filepath = app.config['UPLOAD_FOLDER'] + str(article_id) + '/'
+            # XCJP consider updating to all relative paths
             if type == 'audio':
                 filepath = filepath + 'audio/'
+                relativePath = RELATIVE_UPLOAD_PATH + str(article_id) + '/audio/'
+            else:
+                relativePath = RELATIVE_UPLOAD_PATH + str(article_id) + '/'
             if not os.path.isdir(filepath):
                 os.makedirs(filepath)
             file.save(os.path.join(filepath, filename))
             article = getArticle(article_id, True)
-            relativePath = RELATIVE_UPLOAD_PATH + str(article_id) + '/'
             saveArticleResourceFromForm(article_id, request.form, filename, relativePath, type)
             return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
         else:
