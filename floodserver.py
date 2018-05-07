@@ -22,6 +22,7 @@ sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
 UPLOAD_FOLDER = '/home/flood/theflood/static/articles/'
+RELATIVE_UPLOAD_PATH = '/static/articles/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -311,7 +312,8 @@ def uploadFiles(article_id, type):
                 os.makedirs(filepath)
             file.save(os.path.join(filepath, filename))
             article = getArticle(article_id, True)
-            saveArticleResourceFromForm(article_id, request.form, filename, filepath, type)
+            relativePath = RELATIVE_UPLOAD_PATH + str(article_id) + '/'
+            saveArticleResourceFromForm(article_id, request.form, filename, relativePath, type)
             return redirect(url_for('editArticle', article_id=article_id, editor='editor'))
         else:
             return render_template('uploadFiles.html', article_id=article_id, type=type)
