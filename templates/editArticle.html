@@ -71,6 +71,7 @@
         <a href="{{url_for('uploadFiles', article_id=article[0], type='audio')}}">Add audio (unsaved changes will be discarded)</a>
       {% else %}
         <h3>Save this article with a valid title, and then return to this page to add image and audio files</h3>
+      {% endif %}
       <section class="text">
         <form action="#" method="post">
           <label>Title</label>
