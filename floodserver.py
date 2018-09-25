@@ -612,8 +612,8 @@ def getAllAuthors():
 def getAuthor(auth_id):
     try:
         sql = """SELECT * FROM author
-        WHERE id = %s; """
-        cur.execute(sql, str(auth_id))
+        WHERE id = %s; """ % str(auth_id)
+        cur.execute(sql)
         author = cur.fetchone()
         return author
     except(Exception, psycopg2.DatabaseError) as error:
