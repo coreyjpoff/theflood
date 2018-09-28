@@ -19,7 +19,7 @@
         <img alt="{{article[1]}}" src="{{image[6]}}">
         <span class="caption">{{image[5]}}</span>
       </section>
-    {% endif %}
+      {% endif %}
     <section class="text">
       <h1>{{article[1]}}</h1>
       {% if article[2] %}
@@ -34,6 +34,9 @@
         {% endif %}
         {{article[3]}}
       </h3>
+      {% if article[0] == 24 %}
+
+      {% endif %}
       {% if other_files %}
         <section class="article-image">
           {% for file in other_files %}
@@ -51,9 +54,11 @@
         </section
         <p></p>
       {% endif %}
-      <section class="text">
-        {{article[6]|safe}}
-      </section>
+      {% if article[0] != 24 %}
+        <section class="text">
+          {{article[6]|safe}}
+        </section>
+      {% endif %}
       <section>
         {% if authors %}
           {% for author in authors %}
