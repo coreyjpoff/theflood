@@ -35,7 +35,9 @@
         {{article[3]}}
       </h3>
       {% if article[0] == 24 %}
-
+      <section class="text">
+        {{article[6]|safe}}
+      </section>
       {% endif %}
       {% if other_files %}
         <section class="article-image">
