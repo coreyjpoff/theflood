@@ -180,7 +180,7 @@ def showEditorHome():
     )
 
 # XCJP implement or delete
-# @app.route('/edit/admin')
+@app.route('/edit/admin')
 def showAdminInfo():
     # if not isAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
@@ -222,7 +222,7 @@ def editArticle(article_id,editor):
     )
 
 # XCJP check login
-# @app.route('/edit/new', methods=['GET', 'POST'])
+@app.route('/edit/new', methods=['GET', 'POST'])
 def newArticle():
     article = [-1,'','',None,None,'','',True,False,0,'',False]
     authors = []
@@ -251,12 +251,12 @@ def newArticle():
             other_files=other_files
         )
 
-# @app.route('/edit/authors/')
+@app.route('/edit/authors/')
 def editAuthorsHome():
     authors = getAllAuthors()
     return render_template('editAuthors.html', authors=authors)
 
-# @app.route('/edit/authors/<int:auth_id>/', methods=['GET', 'POST'])
+@app.route('/edit/authors/<int:auth_id>/', methods=['GET', 'POST'])
 def editAuthor(auth_id):
     author = getAuthor(auth_id)
     if request.method == 'POST':
@@ -265,7 +265,7 @@ def editAuthor(auth_id):
     else:
         return render_template('editAuthor.html', author=author)
 
-# @app.route('/edit/authors/new/', methods=['GET', 'POST'])
+@app.route('/edit/authors/new/', methods=['GET', 'POST'])
 def newAuthor():
     author = [-1, None, None]
     if request.method == 'POST':
@@ -275,13 +275,13 @@ def newAuthor():
         return render_template('editAuthor.html', author=author)
 
 # XCJP Come back here when implemented--didn't switch DBs
-# @app.route('/edit/home')
+@app.route('/edit/home')
 def editHomePage():
     if not isEditorOrAdmin(login_session.get('role')):
         return redirect(url_for('showHome'))
     return render_template('editHome.html')
 
-# @app.route('/email-list')
+@app.route('/email-list')
 def showEmailList():
     # XCJP add security/login check
     try:
@@ -293,7 +293,7 @@ def showEmailList():
         return error
 
 # XCJP check login
-# @app.route('/edit/upload/<int:article_id>/<string:type>', methods=['GET', 'POST'])
+@app.route('/edit/upload/<int:article_id>/<string:type>', methods=['GET', 'POST'])
 def uploadFiles(article_id, type):
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -328,7 +328,7 @@ def uploadFiles(article_id, type):
         # )
 
 # XCJP update this to avoid using get method
-# @app.route('/edit/delete/resource/<int:id>/<int:article_id>')
+@app.route('/edit/delete/resource/<int:id>/<int:article_id>')
 def deleteResource(id, article_id):
     try:
         sql = """SELECT resource_location FROM article_resource WHERE id=%s;"""
