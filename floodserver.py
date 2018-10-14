@@ -187,7 +187,7 @@ def showAdminInfo():
     return render_template('editAdmin.html')
 
 # XCJP check login
-# @app.route('/edit/<string:editor>/<int:article_id>', methods=['GET', 'POST'])
+@app.route('/edit/<string:editor>/<int:article_id>', methods=['GET', 'POST'])
 def editArticle(article_id,editor):
     article = getArticle(article_id, True)
     authors = getAuthorsForArticle(article_id)
