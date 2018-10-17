@@ -162,7 +162,7 @@ def logout():
         return response
 
 # XCJP check login
-# @app.route('/edit/')
+@app.route('/edit/')
 def showEditorHome():
     # if not isEditorOrAdmin(login_session.get('role')):
     #     return redirect(url_for('showHome'))
