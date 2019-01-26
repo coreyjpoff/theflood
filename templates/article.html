@@ -16,14 +16,14 @@
   <article>
     {% if image %}
       <section class="header-image">
-        <img alt="{{article[1]}}" src="{{image[6]}}">
+        <img alt="{{article.title}}" src="{{image[6]}}">
         <span class="caption">{{image[5]}}</span>
       </section>
       {% endif %}
     <section class="text">
-      <h1>{{article[1]}}</h1>
-      {% if article[2] %}
-        <h2>{{article[2]}}</h2>
+      <h1>{{article.title}}</h1>
+      {% if article.subtitle %}
+        <h2>{{article.subtitle}}</h2>
       {% endif %}
       <h3 class="authorAndDate">
         {% if authors %}
@@ -32,11 +32,11 @@
             {{author[1]}} \
           {% endfor %}
         {% endif %}
-        {{article[3]}}
+        {{article.publish_date}}
       </h3>
-      {% if article[0] == 24 %}
+      {% if article.id == 24 %}
       <section class="text">
-        {{article[6]|safe}}
+        {{article.html_text|safe}}
       </section>
       {% endif %}
       {% if other_files %}
@@ -56,9 +56,9 @@
         </section
         <p></p>
       {% endif %}
-      {% if article[0] != 24 %}
+      {% if article.id != 24 %}
         <section class="text">
-          {{article[6]|safe}}
+          {{article.html_text|safe}}
         </section>
       {% endif %}
       <section>

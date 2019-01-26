@@ -31,7 +31,6 @@ def create_tables():
         is_hidden BOOLEAN DEFAULT 'f' NOT NULL
     )
     """,
-    # TODO: Create index on articles (on_home)?
     """
     CREATE TABLE author (
         id SERIAL PRIMARY KEY,

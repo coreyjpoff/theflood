@@ -16,6 +16,7 @@ from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import psycopg2
 from werkzeug.utils import secure_filename
+from article import Article
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -77,15 +78,15 @@ def showArchive():
 @app.route('/archive/<string:url_desc>/<int:article_id>')
 def showArticle(article_id, url_desc, articleToShow=None):
     if articleToShow is None:
-        articleToShow = getArticle(article_id, False)
-    if articleToShow is None:
+        article = Article.from_id(article_id)
+    if article is None:
         return redirect(url_for('showHome'))
-    image = getTitleImageForArticle(articleToShow[0])
-    other_files = getNontitleImagesForArticle(articleToShow[0])
-    authors = getAuthorsForArticle(articleToShow[0])
+    image = article.getTitleImageForArticle()
+    other_files = article.getNontitleImagesForArticle()
+    authors = article.getAuthorsForArticle()
     return render_template(
         'article.html',
-        article=articleToShow,
+        article=article,
         authors=authors,
         image=image,
         other_files=other_files
