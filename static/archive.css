@@ -84,9 +84,9 @@ article a .authorAndDate {
   }
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 1200px) {
   .imageAndCaption {
-    max-width: 28%;
+    max-width: 40%;
   }
 
   .text {
