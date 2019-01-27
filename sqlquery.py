@@ -1,9 +1,10 @@
+#!/usr/bin/env python2.7
+
 import psycopg2
 
 class SQL:
-    # XCJP untested
     @classmethod
-    def execute(sqlClass, sqlQuery, params):
+    def insert(sqlClass, sqlQuery, params):
         conn = None
         try:
             conn = psycopg2.connect(database="flood", user="flood", password="flood")
@@ -18,6 +19,7 @@ class SQL:
 
     @classmethod
     def queryOneRow(sqlClass, sqlQuery, params=None):
+        conn = None
         results = None
         try:
             conn = psycopg2.connect(database="flood", user="flood", password="flood")
@@ -33,6 +35,7 @@ class SQL:
 
     @classmethod
     def queryAllRows(sqlClass, sqlQuery, params=None):
+        conn = None
         results = None
         try:
             conn = psycopg2.connect(database="flood", user="flood", password="flood")

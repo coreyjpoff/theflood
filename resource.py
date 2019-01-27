@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 from sqlquery import SQL
 
 class Resource:
@@ -33,8 +35,6 @@ class Resource:
         if image is not None:
             image = resourceClass(image[0], image[1], image[2], image[3],
                 image[4], image[5], image[6])
-        else:
-            print('ID ' + str(articleID))
         return image
 
     @classmethod

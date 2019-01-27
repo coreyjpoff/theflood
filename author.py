@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 from sqlquery import SQL
 
 class Author:

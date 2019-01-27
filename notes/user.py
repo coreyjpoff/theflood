@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 @app.route('/login')
 def showLogin():
     # TODO: See if i'm already logged in?

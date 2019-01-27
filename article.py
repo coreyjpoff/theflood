@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 from datetime import date
 from sqlquery import SQL
 from author import Author
