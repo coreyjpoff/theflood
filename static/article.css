@@ -35,7 +35,7 @@ article {
   margin: 0 auto;
 }
 
-.text {
+.content {
   font: 100%/1.6 'Droid Serif', serif;
   padding: 0;
   margin: 0 auto;
@@ -50,16 +50,19 @@ p {
 h1 {
   font: 180% 'Droid Serif', serif;
   margin: 0;
+  text-align: left;
 }
 
 h2 {
   font: 150% 'Droid Serif', serif;
   font-style: italic;
   margin: 5px 0 0 0;
+  text-align: left;
 }
 
 h3 {
   font: 120% 'Droid Serif', serif;
+  text-align: left;
 }
 
 .bio {
@@ -76,7 +79,7 @@ form a {
 }
 
 @media screen and (min-width: 500px) {
-  .text {
+  .content {
     padding: 0 40px;
   }
 }
@@ -85,18 +88,28 @@ form {
   display: block;
 }
 
-@media screen and (min-width:800px) {
-  .text {
-    padding: 0 80px;
-    max-width: 850px;
+@media screen and (min-width:750px) {
+  .content {
     text-align: center;
   }
 
+  .text {
+    padding: 0 80px;
+    max-width: 700px;
+    margin: auto;
+  }
+
   .header-image {
-      max-width: 60%;
+      max-width: 70%;
   }
 
   .article-image {
     max-width: 70%
+  }
+}
+
+@media screen and (min-width:1000px) {
+  .content {
+    padding: 0 100px;
   }
 }

@@ -20,7 +20,7 @@
         <span class="caption">{{article.titleImage.caption}}</span>
       </section>
       {% endif %}
-    <section class="text">
+    <section class="content">
       <h1>{{article.title}}</h1>
       {% if article.subtitle %}
         <h2>{{article.subtitle}}</h2>
@@ -48,7 +48,7 @@
         </section>
         <p></p>
       {% endif %}
-      {% if 'XCJP add this back' == 'audio' %}
+      {% if 'XCJP add this back--need to see if article has audio attribute' == 'audio' %}
       <section class="article-image">
         <audio controls>
           <source src="{{audio.resourceLocation}}" type="audio/wav">

@@ -11,6 +11,6 @@ readable and maintainable. Self-imposed deadline: 1/28
 - Adding google authentication back. Self-imposed deadline: 2/4
 
 - Adding basic front end optimization and monitoring (relatively sized images,
-  usage stats, etc...). Self-imposed deadline: 2/8
+  usage stats, audio support for older browsers, etc...). Self-imposed deadline: 2/8
 
 - Finish testing and publish. Self-imposed deadline: 2/15
