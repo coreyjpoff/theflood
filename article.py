@@ -1,7 +1,7 @@
 from datetime import date
 from sqlquery import SQL
 from author import Author
-# from resource import Resource
+from resource import Resource
 
 class Article:
     def __init__(self, id, title, subtitle=None, publishDate=date.today(),
@@ -20,8 +20,8 @@ class Article:
         self.lead = lead
         self.isHidden = isHidden
         self.setAuthorsForArticle()
-        # self.setTitleImageForArticle()
-        # self.setNontitleImagesForArticle()
+        self.setTitleImageForArticle()
+        self.setNontitleImagesForArticle()
 
     @classmethod
     def fromID(articleClass, id):

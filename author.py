@@ -6,11 +6,13 @@ class Author:
         self.name = name
         self.bio = bio
 
+    # XCJP untested
     @classmethod
     def fromID(authorClass, id):
         author = authorClass.__getAuthorByIDFromDB__(id)
         return authorClass(id, author[1], author[2])
 
+    # XCJP untested
     @classmethod
     def __getAuthorByIDFromDB__(authorclass, id):
         GET_AUTHOR_BY_ID_QUERY = """

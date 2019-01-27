@@ -84,8 +84,6 @@ def showArticle(article_id, url_desc, articleToShow=None):
     return render_template(
         'article.html',
         article=article,
-        image=image,
-        other_files=other_files
     )
 
 @app.route('/about')

@@ -14,10 +14,10 @@
 <body>
   {% include 'header.html' %}
   <article>
-    {% if image %}
+    {% if article.titleImage %}
       <section class="header-image">
-        <img alt="{{article.title}}" src="{{image[6]}}">
-        <span class="caption">{{image[5]}}</span>
+        <img alt="{{article.title}}" src="{{article.titleImage.resourceLocation}}">
+        <span class="caption">{{article.titleImage.caption}}</span>
       </section>
       {% endif %}
     <section class="text">
@@ -39,22 +39,22 @@
         {{article.htmlText|safe}}
       </section>
       {% endif %}
-      {% if otherFiles %}
-        <section class="article-image">
-          {% for file in otherFiles %}
-            {% if file[3] == 'audio' %}
-            <audio controls>
-              <source src="{{file[6]}}" type="audio/wav">
-              <source src="{{file[6]}}" type="audio/mpeg">
-              Your browser does not support the audio element.
-            </audio>
-            {% else %}
-              <img alt="{{file[1]}}" src="{{file[6]}}">
-            {% endif %}
-            <span class="caption">{{file[5]}}</span>
-          {% endfor %}
-        </section
+      {% if article.nontitleImages %}
+      <section class="article-image">
+        {% for image in article.nontitleImages %}
+          <img alt="{{image.name}}" src="{{image.resourceLocation}}">
+          <span class="caption">{{image.caption}}</span>
+        {% endfor %}
+        </section>
         <p></p>
+      {% endif %}
+      {% if 'XCJP add this back' == 'audio' %}
+      <section class="article-image">
+        <audio controls>
+          <source src="{{audio.resourceLocation}}" type="audio/wav">
+          <source src="{{audio.resourceLocation}}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
       {% endif %}
       {% if article.id != 24 %}
         <section class="text">
