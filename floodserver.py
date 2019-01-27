@@ -55,17 +55,10 @@ def showHome():
 
 @app.route('/archive/')
 def showArchive():
-    articles = getAllArticles(False, False)
-    authors = {}
-    images = {}
-    for article in articles:
-        authors[article[0]] = getAuthorsForArticle(article[0])
-        images[article[0]] = getTitleImageForArticle(article[0])
+    articles = Article.getArchiveArticles()
     return render_template(
         'archive.html',
         articles=articles,
-        authors=authors,
-        images=images
     )
 
 @app.route('/archive/<string:url_desc>/<int:article_id>')

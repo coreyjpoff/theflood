@@ -47,7 +47,7 @@ article a .text {
   padding: 0;
   margin: 0;
   display: block;
-  float: right;
+  float: left;
 }
 
 .text p {
@@ -77,9 +77,10 @@ article a .authorAndDate {
   .imageAndCaption {
     max-width: 48%;
   }
-  
-  .text {
+
+  article a .text {
     width: 48%;
+    float: right;
   }
 }
 
@@ -87,7 +88,7 @@ article a .authorAndDate {
   .imageAndCaption {
     max-width: 28%;
   }
-  
+
   .text {
     width: 68%;
   }

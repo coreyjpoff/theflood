@@ -41,8 +41,7 @@ class Article:
 
     @classmethod
     def __getArticleByIDFromDB__(articleClass, id):
-        GET_ARTICLE_BY_ID_QUERY = """
-            SELECT * FROM article a
+        GET_ARTICLE_BY_ID_QUERY = """SELECT * FROM article a
             WHERE a.id = %s; """ % str(id)
         return SQL.queryOneRow(GET_ARTICLE_BY_ID_QUERY)
 
@@ -62,3 +61,20 @@ class Article:
             WHERE on_home = 't' AND is_hidden = 'f'
             ORDER BY priority DESC, id ASC; """
         return SQL.queryAllRows(GET_ALL_ARTICLES_ON_HOME_NOT_HIDDEN)
+
+    @classmethod
+    def getArchiveArticles(articleClass):
+        articles = []
+        articleQueryResults = articleClass.__getAllArticlesMarkedNotHidden__()
+        for article in articleQueryResults:
+            articles.append(articleClass(article[0], article[1], article[2], article[3], article[4],
+                article[5], article[6], article[7], article[8], article[9],
+                article[10], article[11]))
+        return articles
+
+    @classmethod
+    def __getAllArticlesMarkedNotHidden__(articleClass):
+        GET_ALL_ARTICLES_NOT_HIDDEN = """SELECT * FROM article
+            WHERE is_hidden = 'f'
+            ORDER BY priority DESC, id ASC; """
+        return SQL.queryAllRows(GET_ALL_ARTICLES_NOT_HIDDEN)

@@ -23,8 +23,7 @@ class Resource:
     # XCJP untested
     @classmethod
     def __getResourceByIDFromDB__(resourceClass, id):
-        GET_RESOURCE_BY_ID_QUERY = """
-            SELECT * FROM article_resource ar
+        GET_RESOURCE_BY_ID_QUERY = """SELECT * FROM article_resource ar
             WHERE ar.id = %s; """ % str(id)
         return SQL.queryOneRow(GET_RESOURCE_BY_ID_QUERY)
 
@@ -40,8 +39,7 @@ class Resource:
 
     @classmethod
     def __getTitleImageForArticleIDFromDB__(resourceClass, articleID):
-        GET_TITLE_IMAGE_FOR_ARTICLE_ID_QUERY = """
-            SELECT * FROM article_resource a
+        GET_TITLE_IMAGE_FOR_ARTICLE_ID_QUERY = """SELECT * FROM article_resource a
             WHERE a.article_id = %s
             AND a.is_title_img = 't'; """ % str(articleID)
         return SQL.queryOneRow(GET_TITLE_IMAGE_FOR_ARTICLE_ID_QUERY)
@@ -58,8 +56,7 @@ class Resource:
 
     @classmethod
     def __getNontitleImagesForArticleIDFromDB__(resourceClass, articleID):
-        GET_NONTITLE_IMAGES_FOR_ARTICLE_ID_QUERY = """
-            SELECT * FROM article_resource ar
+        GET_NONTITLE_IMAGES_FOR_ARTICLE_ID_QUERY = """SELECT * FROM article_resource ar
             WHERE ar.article_id = %s
             AND ar.resource_type != 'audio'
             AND ar.is_title_img = 'f'; """ % str(articleID)
