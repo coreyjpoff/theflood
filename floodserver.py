@@ -47,17 +47,10 @@ FOOTNOTE = 'FOOTNOTE'
 @app.route('/home/')
 @app.route('/')
 def showHome():
-    articles = getAllArticles(True, False)
-    authors = {}
-    images = {}
-    for article in articles:
-        authors[article[0]] = getAuthorsForArticle(article[0])
-        images[article[0]] = getTitleImageForArticle(article[0])
+    articles = Article.getHomePageArticles()
     return render_template(
         'home.html',
         articles=articles,
-        authors=authors,
-        images=images
     )
 
 @app.route('/archive/')

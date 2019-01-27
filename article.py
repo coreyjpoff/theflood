@@ -23,6 +23,15 @@ class Article:
         self.setTitleImageForArticle()
         self.setNontitleImagesForArticle()
 
+    def setAuthorsForArticle(self):
+        self.authors = Author.getAuthorsByArticleID(self.id)
+
+    def setTitleImageForArticle(self):
+        self.titleImage = Resource.getTitleImageByArticleID(self.id)
+
+    def setNontitleImagesForArticle(self):
+        self.nontitleImages = Resource.getNontitleImagesByArticleID(self.id)
+
     @classmethod
     def fromID(articleClass, id):
         article = articleClass.__getArticleByIDFromDB__(id)
@@ -37,25 +46,19 @@ class Article:
             WHERE a.id = %s; """ % str(id)
         return SQL.queryOneRow(GET_ARTICLE_BY_ID_QUERY)
 
-    def setTitleImageForArticle(self):
-        GET_TITLE_IMAGE_BY_ID_QUERY = """
-            SELECT * FROM article_resource a
-            WHERE a.article_id = %s
-            AND a.is_title_img = 't'; """ % str(self.id)
-        return SQL.queryOneRow(GET_TITLE_IMAGE_BY_ID_QUERY)
+    @classmethod
+    def getHomePageArticles(articleClass):
+        articles = []
+        articleQueryResults = articleClass.__getAllArticlesMarkedOnHomeNotHidden__()
+        for article in articleQueryResults:
+            articles.append(articleClass(article[0], article[1], article[2], article[3], article[4],
+                article[5], article[6], article[7], article[8], article[9],
+                article[10], article[11]))
+        return articles
 
-    def setNontitleImagesForArticle(self):
-        GET_NON_TITLE_IMAGES_BY_ID_QUERY = """
-            SELECT * FROM article_resource a
-            WHERE a.article_id = %s
-            AND a.is_title_img = 'f'; """ % str(self.id)
-        return SQL.queryAllRows(GET_NON_TITLE_IMAGES_BY_ID_QUERY)
-
-    def setAuthorsForArticle(self):
-        self.authors = Author.getAuthorsByArticleID(self.id)
-
-    def setTitleImageForArticle(self):
-        self.titleImage = Resource.getTitleImageByArticleID(self.id)
-
-    def setNontitleImagesForArticle(self):
-        self.nontitleImages = Resource.getNontitleImagesByArticleID(self.id)
+    @classmethod
+    def __getAllArticlesMarkedOnHomeNotHidden__(articleClass):
+        GET_ALL_ARTICLES_ON_HOME_NOT_HIDDEN = """SELECT * FROM article
+            WHERE on_home = 't' AND is_hidden = 'f'
+            ORDER BY priority DESC, id ASC; """
+        return SQL.queryAllRows(GET_ALL_ARTICLES_ON_HOME_NOT_HIDDEN)

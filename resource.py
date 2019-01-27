@@ -15,8 +15,10 @@ class Resource:
     @classmethod
     def fromID(resourceClass, id):
         resource = resourceClass.__getResourceByIDFromDB__(id)
-        return resourceClass(id, resource[1], resource[2], resource[3],
-            resource[4], resource[5], resource[6])
+        if resource is not None:
+            resource = resourceClass(id, resource[1], resource[2], resource[3],
+                resource[4], resource[5], resource[6])
+        return resource
 
     # XCJP untested
     @classmethod
@@ -29,8 +31,12 @@ class Resource:
     @classmethod
     def getTitleImageByArticleID(resourceClass, articleID):
         image = resourceClass.__getTitleImageForArticleIDFromDB__(articleID)
-        return resourceClass(image[0], image[1], image[2], image[3],
-            image[4], image[5], image[6])
+        if image is not None:
+            image = resourceClass(image[0], image[1], image[2], image[3],
+                image[4], image[5], image[6])
+        else:
+            print('ID ' + str(articleID))
+        return image
 
     @classmethod
     def __getTitleImageForArticleIDFromDB__(resourceClass, articleID):

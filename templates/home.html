@@ -20,7 +20,7 @@
     <section class="main">
       {% set count = [0] %}
       {% for article in articles %}
-        {% if article[8] %}
+        {% if article.featured %}
           <article class="featured">
           {% if count.append(count.pop() * 0) %}{% endif %}
         {% else %}
@@ -31,32 +31,32 @@
             <article>
           {% endif %}
         {% endif %}
-          <a href="{{url_for('showArticle', article_id=article[0], url_desc=article[5])}}">
-            {% if images[article[0]] %}
-              <img class="article-image" alt="{{article[1]}}" src="{{images[article[0]][6]}}">
-              <p class="caption">{{images[article[0]][5]}}</p>
+          <a href="{{url_for('showArticle', article_id=article.id, url_desc=article.urlDesc)}}">
+            {% if article.titleImage %}
+              <img class="article-image" alt="{{article.title}}" src="{{article.titleImage.resourceLocation}}">
+              <p class="caption">{{article.titleImage.caption}}</p>
             {% endif %}
             <section class="text">
-              <h2>{{article[1]}}</h2>
-              {% if article[2] %}
-                <h3>{{article[2]}}</h3>
+              <h2>{{article.title}}</h2>
+              {% if article.subtitle %}
+                <h3>{{article.subtitle}}</h3>
               {% endif %}
               <p class="authorAndDate">
-                {% if authors[article[0]] %}
+                {% if article.authors %}
                   By
-                  {% for author in authors[article[0]] %}
-                    {{author[1]}} \
+                  {% for author in article.authors %}
+                    {{author.name}} \
                   {% endfor %}
                 {% endif %}
-                {{article[3]}}
+                {{article.publishDate}}
               </p>
               <section>
-                {% if article[10] %}
-                  {{article[10]|safe}}
-                {% elif article[8] %}
-                  {{' '.join(article[6].split()[:90])|safe}}...</p>
+                {% if article.lead %}
+                  {{article.lead|safe}}
+                {% elif article.featured %}
+                  {{' '.join(article.htmlText.split()[:90])|safe}}...</p>
                 {% else %}
-                  {{' '.join(article[6].split()[:50])|safe}}...</p>
+                  {{' '.join(article.htmlText.split()[:50])|safe}}...</p>
                 {% endif %}
               </section>
             </section>
