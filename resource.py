@@ -74,5 +74,5 @@ class Resource:
     def __getAudioForArticleIDFromDB__(resourceClass, articleID):
         GET_AUDIO_FOR_ARTICLE_ID_QUERY = """SELECT * FROM article_resource a
             WHERE a.article_id = %s
-            AND a.is_title_img = 't'; """ % str(articleID)
+            AND a.resource_type = 'audio'; """ % str(articleID)
         return SQL.queryOneRow(GET_AUDIO_FOR_ARTICLE_ID_QUERY)

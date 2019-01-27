@@ -49,6 +49,8 @@
         <p></p>
       {% endif %}
       {% if article.audioFile%}
+      The location is:
+      {{article.audioFile.resourceLocation}}
       <section class="article-image">
         <audio controls>
           <source src="{{article.audioFile.resourceLocation}}" type="audio/wav">
