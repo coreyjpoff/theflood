@@ -8,7 +8,7 @@ class Subscriber:
         self.name = name
 
     @classmethod
-    def fromForm(subscriberClass, form):
+    def saveSubscriberFromForm(subscriberClass, form):
         error = subscriberClass.__verifySubscriberForm__(form)
         if error is not None:
             return error

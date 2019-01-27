@@ -57,7 +57,7 @@ def showSubmissions():
 @app.route('/subscribe', methods=['GET', 'POST'])
 def showSubscribe():
     if request.method == 'POST':
-        errorText = Subscriber.fromForm(request.form)
+        errorText = Subscriber.saveSubscriberFromForm(request.form)
         if errorText is None:
             return redirect(url_for('showHome'))
         else:

@@ -65,6 +65,10 @@ class Resource:
     @classmethod
     def getAudioByArticleID(resourceClass, articleID):
         audio = resourceClass.__getAudioForArticleIDFromDB__(articleID)
+        if audio is not None:
+            audio = resourceClass(audio[0], audio[1], audio[2], audio[3],
+                audio[4], audio[5], audio[6])
+        return audio
 
     @classmethod
     def __getAudioForArticleIDFromDB__(resourceClass, articleID):
