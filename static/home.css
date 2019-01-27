@@ -5,6 +5,7 @@ li.home-li {
 
 li.home-li a {
   color: grey;
+  -webkit-filter: brightness(150%);
 }
 
 .main {
@@ -36,6 +37,10 @@ article a:hover {
 
 .article-image {
   max-width: 100%;
+}
+
+.article-image:hover { 
+  opacity: 0.7;
 }
 
 article a .text {
@@ -74,56 +79,56 @@ article a .authorAndDate {
   article {
     width: 50%;
   }
-  
+
   .featured {
     width: 100%;
   }
-  
+
   .featured .article-image {
     max-width: 85%;
     margin: 0 auto;
   }
-  
+
   .featured .caption {
     max-width: 85%;
     margin: 0 auto;
   }
-  
+
   article.featured a .text {
     max-width: 85%;
     margin: 0 auto;
   }
-  
+
   .clear .article-image {
     max-width: 85%;
     margin: 0 0 0 auto;
   }
-  
+
   .clear .caption {
     max-width: 85%;
     margin: 0 0 0 auto;
   }
-  
+
   article.clear a .text {
     max-width: 85%;
     margin: 0 0 0 auto;
   }
-  
+
   .article-image {
     max-width: 85%;
     margin: 0 auto 0 0;
   }
-  
+
   .caption {
     max-width: 85%;
     margin: 0 auto 0 0;
   }
-  
+
   article a .text {
     max-width: 85%;
     margin: 0 auto 0 0;
   }
-  
+
   .main {
     margin: 0 auto;
   }

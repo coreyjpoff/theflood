@@ -42,6 +42,10 @@ article a p {
   padding: 0;
 }
 
+.article-image:hover {
+  opacity: 0.7;
+}
+
 article a .text {
   font: 80%/1.6 'Droid Serif', serif;
   padding: 0;
