@@ -26,22 +26,22 @@
         <h2>{{article.subtitle}}</h2>
       {% endif %}
       <h3 class="authorAndDate">
-        {% if authors %}
+        {% if article.authors %}
           By
-          {% for author in authors %}
-            {{author[1]}} \
+          {% for author in article.authors %}
+            {{author.name}} \
           {% endfor %}
         {% endif %}
-        {{article.publish_date}}
+        {{article.publishDate}}
       </h3>
       {% if article.id == 24 %}
       <section class="text">
-        {{article.html_text|safe}}
+        {{article.htmlText|safe}}
       </section>
       {% endif %}
-      {% if other_files %}
+      {% if otherFiles %}
         <section class="article-image">
-          {% for file in other_files %}
+          {% for file in otherFiles %}
             {% if file[3] == 'audio' %}
             <audio controls>
               <source src="{{file[6]}}" type="audio/wav">
@@ -58,13 +58,13 @@
       {% endif %}
       {% if article.id != 24 %}
         <section class="text">
-          {{article.html_text|safe}}
+          {{article.htmlText|safe}}
         </section>
       {% endif %}
       <section>
-        {% if authors %}
-          {% for author in authors %}
-            <p class="bio">{{author[2]|safe}}</p>
+        {% if article.authors %}
+          {% for author in article.authors %}
+            <p class="bio">{{author.bio|safe}}</p>
           {% endfor %}
         {% endif %}
       </section>

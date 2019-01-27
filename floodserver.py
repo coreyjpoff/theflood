@@ -78,16 +78,12 @@ def showArchive():
 @app.route('/archive/<string:url_desc>/<int:article_id>')
 def showArticle(article_id, url_desc, articleToShow=None):
     if articleToShow is None:
-        article = Article.from_id(article_id)
+        article = Article.fromID(article_id)
     if article is None:
         return redirect(url_for('showHome'))
-    image = article.getTitleImageForArticle()
-    other_files = article.getNontitleImagesForArticle()
-    authors = article.getAuthorsForArticle()
     return render_template(
         'article.html',
         article=article,
-        authors=authors,
         image=image,
         other_files=other_files
     )
