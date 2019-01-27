@@ -23,7 +23,7 @@ article a {
 }
 
 article a:hover {
-  color: grey;
+  opacity: 0.7;
 }
 
 article a p {
@@ -40,10 +40,6 @@ article a p {
 .article-image {
   max-width: 100%;
   padding: 0;
-}
-
-.article-image:hover {
-  opacity: 0.7;
 }
 
 article a .text {
