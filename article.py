@@ -21,18 +21,22 @@ class Article:
         self.priority = priority
         self.lead = lead
         self.isHidden = isHidden
-        self.setAuthorsForArticle()
-        self.setTitleImageForArticle()
-        self.setNontitleImagesForArticle()
+        self.__getAuthorsForArticle__()
+        self.__getTitleImageForArticle__()
+        self.__getNontitleImagesForArticle__()
+        self.__getAudioFile__()
 
-    def setAuthorsForArticle(self):
+    def __getAuthorsForArticle__(self):
         self.authors = Author.getAuthorsByArticleID(self.id)
 
-    def setTitleImageForArticle(self):
+    def __getTitleImageForArticle__(self):
         self.titleImage = Resource.getTitleImageByArticleID(self.id)
 
-    def setNontitleImagesForArticle(self):
+    def __getNontitleImagesForArticle__(self):
         self.nontitleImages = Resource.getNontitleImagesByArticleID(self.id)
+
+    def __getAudioFile__(self):
+        self.audioFile = Resource.getAudioByArticleID(self.id)
 
     @classmethod
     def fromID(articleClass, id):

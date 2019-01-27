@@ -4,13 +4,7 @@ import sys
 import os
 import string
 import re
-from flask import Flask, render_template, request, redirect, url_fo
-from flask import session as login_session
-from sqlalchemy import create_engine, and_, desc
-from sqlalchemy.orm import sessionmaker
-from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
-import psycopg2
-from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, redirect, url_for
 from article import Article
 from subscriber import Subscriber
 
@@ -18,13 +12,6 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
-UPLOAD_FOLDER = '/home/flood/theflood/static/articles/'
-RELATIVE_UPLOAD_PATH = '/static/articles/'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-conn = psycopg2.connect(database="flood", user="flood", password="flood")
-cur = conn.cursor()
 
 # page renders
 @app.route('/home/')

@@ -48,11 +48,11 @@
         </section>
         <p></p>
       {% endif %}
-      {% if 'XCJP add this back--need to see if article has audio attribute' == 'audio' %}
+      {% if article.audio%}
       <section class="article-image">
         <audio controls>
-          <source src="{{audio.resourceLocation}}" type="audio/wav">
-          <source src="{{audio.resourceLocation}}" type="audio/mpeg">
+          <source src="{{article.audio.resourceLocation}}" type="audio/wav">
+          <source src="{{article.audio.resourceLocation}}" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
       {% endif %}

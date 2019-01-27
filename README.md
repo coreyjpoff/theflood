@@ -13,4 +13,4 @@ readable and maintainable. Est finish: 1/28
 - Adding basic front end optimization and monitoring (relatively sized images,
   usage stat monitoring, audio support for older browsers, etc...). Est finish: 2/8
 
-- Finish testing and publish. Est finish: 2/15
+- Finish testing and publish. Est finish: 2/11

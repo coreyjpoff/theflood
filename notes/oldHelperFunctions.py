@@ -15,6 +15,15 @@ from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import psycopg2
 from werkzeug.utils import secure_filename
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
+app = Flask(__name__)
+UPLOAD_FOLDER = '/home/flood/theflood/static/articles/'
+RELATIVE_UPLOAD_PATH = '/static/articles/'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'wav', 'mp3'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 def getAllArticles(on_home=False, include_hidden=False):
     try:
         if not include_hidden:

@@ -61,3 +61,14 @@ class Resource:
             AND ar.resource_type != 'audio'
             AND ar.is_title_img = 'f'; """ % str(articleID)
         return SQL.queryAllRows(GET_NONTITLE_IMAGES_FOR_ARTICLE_ID_QUERY)
+
+    @classmethod
+    def getAudioByArticleID(resourceClass, articleID):
+        audio = resourceClass.__getAudioForArticleIDFromDB__(articleID)
+
+    @classmethod
+    def __getAudioForArticleIDFromDB__(resourceClass, articleID):
+        GET_AUDIO_FOR_ARTICLE_ID_QUERY = """SELECT * FROM article_resource a
+            WHERE a.article_id = %s
+            AND a.is_title_img = 't'; """ % str(articleID)
+        return SQL.queryOneRow(GET_AUDIO_FOR_ARTICLE_ID_QUERY)
