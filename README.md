@@ -4,7 +4,9 @@ Under dev
 
 ## Setup Instructions
 - config.py requires the following:
+
 -- pyscopg2 in your python 2.7 environment
+
 -- a database named 'flood' with user 'flood' that has privileges to delete and
 create tables
 
