@@ -3,16 +3,16 @@
 from sqlquery import SQL
 
 class Author:
-    def __init__(self, id, name, bio=None):
-        self.id = id
-        self.name = name
-        self.bio = bio
+    def __init__(self, author):
+        self.id = author[0]
+        self.name = author[1]
+        self.bio = author[2]
 
     # XCJP untested
     @classmethod
     def fromID(authorClass, id):
         author = authorClass.__getAuthorByIDFromDB__(id)
-        return authorClass(id, author[1], author[2])
+        return authorClass(author)
 
     # XCJP untested
     @classmethod
@@ -26,7 +26,7 @@ class Author:
     def getAuthorsByArticleID(authorClass, articleID):
         authors = []
         for author in authorClass.__getAuthorsForArticleIDFromDB__(articleID):
-            authors.append(authorClass(author[0], author[1], author[2]))
+            authors.append(authorClass(author))
         return authors
 
     @classmethod

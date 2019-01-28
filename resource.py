@@ -3,24 +3,22 @@
 from sqlquery import SQL
 
 class Resource:
-    def __init__(self, id, name, articleID, resourceType=None, isTitleImg=False,
-        caption=None, resourceLocation=None, isAboveText=True):
-        self.id = id
-        self.name = name
-        self.articleID = articleID
-        self.resourceType = resourceType
-        self.isTitleImg = isTitleImg
-        self.caption = caption
-        self.resourceLocation = resourceLocation
-        self.isAboveText = isAboveText
+    def __init__(self, resource):
+        self.id = resource[0]
+        self.name = resource[1]
+        self.articleID = resource[2]
+        self.resourceType = resource[3]
+        self.isTitleImg = resource[4]
+        self.caption = resource[5]
+        self.resourceLocation = resource[6]
+        self.isAboveText = resource[7]
 
     # XCJP untested
     @classmethod
     def fromID(resourceClass, id):
         resource = resourceClass.__getResourceByIDFromDB__(id)
         if resource is not None:
-            resource = resourceClass(id, resource[1], resource[2], resource[3],
-                resource[4], resource[5], resource[6], resource[7])
+            resource = resourceClass(resource)
         return resource
 
     # XCJP untested
@@ -34,8 +32,7 @@ class Resource:
     def getTitleImageByArticleID(resourceClass, articleID):
         image = resourceClass.__getTitleImageForArticleIDFromDB__(articleID)
         if image is not None:
-            image = resourceClass(image[0], image[1], image[2], image[3],
-                image[4], image[5], image[6], image[7])
+            image = resourceClass(image)
         return image
 
     @classmethod
@@ -51,8 +48,7 @@ class Resource:
         imagesQueryResult = resourceClass.__getNontitleImagesForArticleIDFromDB__(articleID)
         if imagesQueryResult is not None:
             for image in imagesQueryResult:
-                images.append(resourceClass(image[0], image[1], image[2],
-                    image[3], image[4], image[5], image[6], image[7]))
+                images.append(resourceClass(image))
         return images
 
     @classmethod
@@ -67,8 +63,7 @@ class Resource:
     def getAudioByArticleID(resourceClass, articleID):
         audio = resourceClass.__getAudioForArticleIDFromDB__(articleID)
         if audio is not None:
-            audio = resourceClass(audio[0], audio[1], audio[2], audio[3],
-                audio[4], audio[5], audio[6], audio[7])
+            audio = resourceClass(audio)
         return audio
 
     @classmethod

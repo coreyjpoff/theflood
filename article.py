@@ -1,27 +1,23 @@
 #!/usr/bin/env python2.7
 
-from datetime import date
 from sqlquery import SQL
 from author import Author
 from resource import Resource
 
 class Article:
-    today = date.today()
-    def __init__(self, id, title, subtitle=None, publishDate=today,
-        issue=None, urlDesc=None, htmlText=None, onHome=False,
-        featured=False, priority=None, lead=None, isHidden=False):
-        self.id = id
-        self.title = title
-        self.subtitle = subtitle
-        self.publishDate = publishDate
-        self.issue = issue
-        self.urlDesc = urlDesc
-        self.htmlText = htmlText
-        self.onHome = onHome
-        self.featured = featured
-        self.priority = priority
-        self.lead = lead
-        self.isHidden = isHidden
+    def __init__(self, article):
+        self.id = article[0]
+        self.title = article[1]
+        self.subtitle = article[2]
+        self.publishDate = article[3]
+        self.issue = article[4]
+        self.urlDesc = article[5]
+        self.htmlText = article[6]
+        self.onHome = article[7]
+        self.featured = article[8]
+        self.priority = article[9]
+        self.lead = article[10]
+        self.isHidden = article[11]
         self.__getAuthorsForArticle__()
         self.__getTitleImageForArticle__()
         self.__getNontitleImagesForArticle__()
@@ -42,9 +38,7 @@ class Article:
     @classmethod
     def fromID(articleClass, id):
         article = articleClass.__getArticleByIDFromDB__(id)
-        return articleClass(id, article[1], article[2], article[3], article[4],
-            article[5], article[6], article[7], article[8], article[9],
-            article[10], article[11])
+        return articleClass(article)
 
     @classmethod
     def __getArticleByIDFromDB__(articleClass, id):
@@ -57,9 +51,7 @@ class Article:
         articles = []
         articleQueryResults = articleClass.__getAllArticlesMarkedOnHomeNotHidden__()
         for article in articleQueryResults:
-            articles.append(articleClass(article[0], article[1], article[2], article[3], article[4],
-                article[5], article[6], article[7], article[8], article[9],
-                article[10], article[11]))
+            articles.append(articleClass(article))
         return articles
 
     @classmethod
@@ -74,9 +66,7 @@ class Article:
         articles = []
         articleQueryResults = articleClass.__getAllArticlesMarkedNotHidden__()
         for article in articleQueryResults:
-            articles.append(articleClass(article[0], article[1], article[2], article[3], article[4],
-                article[5], article[6], article[7], article[8], article[9],
-                article[10], article[11]))
+            articles.append(articleClass(article))
         return articles
 
     @classmethod
