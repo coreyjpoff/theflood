@@ -1,0 +1,95 @@
+li.archive-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.archive-li a {
+  color: grey;
+}
+
+article {
+  width: 100%;
+  max-width: 1000px;
+  float: left;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+article a {
+  text-decoration-line: none;
+  color: black;
+  display: block;
+  padding: 1em 15px;
+}
+
+article a:hover {
+  opacity: 0.7;
+}
+
+article a p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.imageAndCaption {
+  display: inline-block;
+  float: left;
+}
+
+.article-image {
+  max-width: 100%;
+  padding: 0;
+}
+
+article a .text {
+  font: 80%/1.6 'Droid Serif', serif;
+  padding: 0;
+  margin: 0;
+  display: block;
+  float: left;
+}
+
+.text p {
+  width: 100%;
+}
+
+article a h2 {
+  font: 250% 'Droid Serif', serif;
+  padding: 0;
+  margin: 0;
+}
+
+article a h3 {
+  font: 150% 'Droid Serif', serif;
+  padding: 2px 0 0 0;
+  margin: 0;
+  font-style: italic;
+}
+
+article a .authorAndDate {
+  font: 90% 'Droid Serif', serif;
+  padding: 8px 0;
+  margin: 0;
+}
+
+@media screen and (min-width: 600px) {
+  .imageAndCaption {
+    max-width: 48%;
+  }
+
+  article a .text {
+    width: 48%;
+    float: right;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .imageAndCaption {
+    max-width: 40%;
+  }
+
+  .text {
+    width: 68%;
+  }
+}

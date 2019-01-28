@@ -1,0 +1,71 @@
+li.submissions-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.submissions-li a {
+  color: grey;
+}
+
+/*Body*/
+article {
+  display: block;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+img {
+  width: 100%;
+  display: block;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+p {
+  width: 100%;
+}
+
+.emphasis {
+  font-style: italic;
+  font-weight: bold;
+  display: inline;
+}
+
+.main {
+  display: block;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 600px) {
+  .main {
+    padding: 0 40px;
+  }
+}
+
+.submissions-paragraph {
+  font: 100%/1.6 'Droid Serif', serif;
+  float: left;
+}
+
+ul.submissions-paragraph {
+  display: block;
+  width: 100%;
+}
+
+ul.submissions-paragraph li {
+  display: list-item;
+}
+
+.disclaimer-info {
+  font: 90%/1.2 'Droid Serif', serif;
+  font-style: italic;
+}
+
+.email-para {
+  display: inline-block;
+}
+
+.thefloodemail {
+  display: inline-block;
+}

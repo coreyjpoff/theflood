@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='article.css')}}">
+  <link rel="icon" href="/static/images/Flood_Heron.png">
+</head>
+<body>
+{% include 'editHeader.html' %}
+  <article>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      {% if type == 'image' %}
+        <label>Is title image</label>
+        <input type='checkbox' name='is_title_img'>
+      {% endif %}
+      <label>Caption</label>
+      <textarea rows='10' cols='100' name='caption'></textarea>
+      <input type=submit value=Upload>
+      <a href="{{url_for('editArticle', article_id=article_id, editor='editor')}}">Cancel</a>
+  </article>
+</body>
+</html>

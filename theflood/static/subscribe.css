@@ -1,0 +1,80 @@
+li.subscribe-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.subscribe-li a {
+  color: grey;
+}
+
+/*Body*/
+article {
+  display: block;
+  max-width: 700px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+img {
+  max-width: 250px;
+  display: inline-block;
+  margin: 10px auto 0 auto;
+}
+
+section {
+  max-width: 350px;
+  width: 100%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 15px 0 0 0;
+  font: 100% 'Droid Serif', serif;
+}
+
+form {
+  display: block;
+  text-align: right;
+}
+
+input {
+  display: inline-block;
+}
+
+input[type=text] {
+    width: 78%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid rgb(102, 255, 199);
+    color: rgb(213,224,230);
+    caret-color: rgb(213,224,230);
+    background-color: rgb(26,106,131);
+}
+
+label {
+  display: inline-block;
+  width: 20%;
+  font: 120% 'Droid Serif', serif;
+  text-align: left;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+    font: 120% 'Droid Serif', serif;
+    background-color: rgb(102, 255, 199);
+    border: none;
+    padding: 16px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+  background-color: rgb(26,106,131);
+}
+
+span {
+  display: inline-block;
+  font-style: italic;
+  color: rgb(26,106,131);
+  max-width: 50%;
+  padding: 10px;
+}

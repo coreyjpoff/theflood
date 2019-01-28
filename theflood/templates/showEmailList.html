@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <!-- <link rel="stylesheet" href="{{url_for('static', filename='contact.css')}}"> -->
+  <link rel="icon" href="/static/images/Flood_Heron.png">
+</head>
+<body>
+  {% include 'header.html' %}
+  <h2>With name:</h2>
+  <article>
+    <section class="main">
+      {% for address in emailList %}
+        {{address[1]}} &lt;{{address[0]}}&gt;;
+      {% endfor %}
+    </section>
+  </article>
+  <h2>No name:</h2>
+  <article>
+    <section class="main">
+      {% for address in emailList %}
+        {{address[0]}};
+      {% endfor %}
+    </section>
+  </article>
+</body>
+</html>

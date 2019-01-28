@@ -1,0 +1,115 @@
+article {
+  margin: 1em 15px;
+  display: block;
+  text-align: center;
+}
+
+.article-image {
+  display: inline-block;
+}
+
+.header-image {
+  display: inline-block;
+}
+
+.article-image img {
+  max-width: 100%;
+  padding: 10px 0 0 0;
+  display: inline-block;
+}
+
+.header-image img {
+  max-width: 100%;
+  padding: 10px 0 0 0;
+  display: inline-block;
+}
+
+.caption {
+  text-align: left;
+  display: block;
+  margin: 0 0 10px 0;
+}
+
+.page-break {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.content {
+  font: 100%/1.6 'Droid Serif', serif;
+  padding: 0;
+  margin: 0 auto;
+  display: block;
+  text-align: left;
+}
+
+p {
+  text-align: left;
+}
+
+h1 {
+  font: 180% 'Droid Serif', serif;
+  margin: 0;
+  text-align: left;
+}
+
+h2 {
+  font: 150% 'Droid Serif', serif;
+  font-style: italic;
+  margin: 5px 0 0 0;
+  text-align: left;
+}
+
+h3 {
+  font: 120% 'Droid Serif', serif;
+  text-align: left;
+}
+
+.bio {
+  font: 90%/1.6 'Droid Serif', serif;
+  font-style: italic;
+}
+
+a {
+  display: inline;
+}
+
+form a {
+  display: flex;
+}
+
+@media screen and (min-width: 500px) {
+  .content {
+    padding: 0 40px;
+  }
+}
+
+form {
+  display: block;
+}
+
+@media screen and (min-width:750px) {
+  .content {
+    text-align: center;
+  }
+
+  .text {
+    padding: 0 80px;
+    max-width: 700px;
+    margin: auto;
+  }
+
+  .header-image {
+      max-width: 70%;
+  }
+
+  .article-image {
+    max-width: 70%
+  }
+}
+
+@media screen and (min-width:1000px) {
+  .content {
+    padding: 0 100px;
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Flood</title>
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='submissions.css')}}">
+  <link rel="icon" href="/static/images/Flood_Heron.png">
+</head>
+<body>
+  {% include 'header.html' %}
+  <article>
+    <img caption="The Flood is Coming" src="/static/images/Flood_Heron.png">
+    <section class="main">
+      <p class="submissions-paragraph">
+        The Flood invites writers of all backgrounds to explore the religious
+        implications of political realities and vice versa.
+      </p>
+      <p class="submissions-paragraph">
+        We currently accepting submissions - essays, analysis, event coverage,
+        memoir, reviews, criticism, interviews, photo essays, and other relevant
+        material. We are open to creative or even cathartic writing but are not
+        currently seeking to publish poetry or previously published material.
+      </p>
+      <p class="submissions-paragraph">
+        We value writing informed by personal experiences, spiritual, political,
+        or otherwise, and we give priority to pieces from people of color, women,
+        trans and queer people, and people from non-Christian faith traditions
+        and backgrounds including atheists and agnostics.
+      </p>
+      <p class="submissions-paragraph">
+        We compensate writers for articles that we publish.
+      </p>
+      <p class="submissions-paragraph email-para">
+        Send all pitches and submissions to
+        <a class="thefloodemail" href="mailto:thefloodmag@gmail.com">
+          TheFloodmag@gmail.com</a>.
+      </p>
+    </section>
+  </article>
+</body>
+</html>

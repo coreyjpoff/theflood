@@ -1,0 +1,49 @@
+li.about-li {
+  font: 100%/1 'Droid Serif', serif;
+  text-decoration-line: underline;
+}
+
+li.about-li a {
+  color: grey;
+}
+
+/*Body*/
+article {
+  display: block;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+img {
+  width: 100%;
+  display: block;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+section {
+  display: block;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+p {
+  width: 100%;
+}
+
+.emphasis {
+  font-style: italic;
+  font-weight: bold;
+  display: inline;
+}
+
+@media screen and (min-width: 600px) {
+  section {
+    padding: 0 40px;
+  }
+}
+
+.disclaimer-info {
+  font: 90%/1.2 'Droid Serif', serif;
+  font-style: italic;
+}
