@@ -4,7 +4,7 @@ from sqlquery import SQL
 
 class Resource:
     def __init__(self, id, name, articleID, resourceType=None, isTitleImg=False,
-        caption=None, resourceLocation=None):
+        caption=None, resourceLocation=None, isAboveText=True):
         self.id = id
         self.name = name
         self.articleID = articleID
@@ -12,6 +12,7 @@ class Resource:
         self.isTitleImg = isTitleImg
         self.caption = caption
         self.resourceLocation = resourceLocation
+        self.isAboveText = isAboveText
 
     # XCJP untested
     @classmethod
@@ -19,7 +20,7 @@ class Resource:
         resource = resourceClass.__getResourceByIDFromDB__(id)
         if resource is not None:
             resource = resourceClass(id, resource[1], resource[2], resource[3],
-                resource[4], resource[5], resource[6])
+                resource[4], resource[5], resource[6], resource[7])
         return resource
 
     # XCJP untested
@@ -34,7 +35,7 @@ class Resource:
         image = resourceClass.__getTitleImageForArticleIDFromDB__(articleID)
         if image is not None:
             image = resourceClass(image[0], image[1], image[2], image[3],
-                image[4], image[5], image[6])
+                image[4], image[5], image[6], image[7])
         return image
 
     @classmethod
@@ -51,7 +52,7 @@ class Resource:
         if imagesQueryResult is not None:
             for image in imagesQueryResult:
                 images.append(resourceClass(image[0], image[1], image[2],
-                    image[3], image[4], image[5], image[6]))
+                    image[3], image[4], image[5], image[6], image[7]))
         return images
 
     @classmethod
@@ -67,7 +68,7 @@ class Resource:
         audio = resourceClass.__getAudioForArticleIDFromDB__(articleID)
         if audio is not None:
             audio = resourceClass(audio[0], audio[1], audio[2], audio[3],
-                audio[4], audio[5], audio[6])
+                audio[4], audio[5], audio[6], audio[7])
         return audio
 
     @classmethod

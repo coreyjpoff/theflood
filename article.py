@@ -6,7 +6,8 @@ from author import Author
 from resource import Resource
 
 class Article:
-    def __init__(self, id, title, subtitle=None, publishDate=date.today(),
+    today = date.today()
+    def __init__(self, id, title, subtitle=None, publishDate=today,
         issue=None, urlDesc=None, htmlText=None, onHome=False,
         featured=False, priority=None, lead=None, isHidden=False):
         self.id = id

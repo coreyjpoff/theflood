@@ -57,7 +57,8 @@ def create_tables():
         resource_type VARCHAR(255) NOT NULL,
         is_title_img BOOLEAN DEFAULT 'f',
         caption VARCHAR(1024),
-        resource_location VARCHAR(255) NOT NULL
+        resource_location VARCHAR(255) NOT NULL,
+        is_above_text BOOLEAN DEFAULT 't'
     )
     """,
     """

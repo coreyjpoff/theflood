@@ -34,17 +34,14 @@
       {% endif %}
       {{article.publishDate}}
       </h3>
-      {% if article.id == 24 %}
-      <section class="text">
-        {{article.htmlText|safe}}
-      </section>
-      {% endif %}
       {% if article.nontitleImages %}
       <section class="article-image">
-        {% for image in article.nontitleImages %}
+      {% for image in article.nontitleImages %}
+        {% if image.isAboveText %}
         <img alt="{{image.name}}" src="{{image.resourceLocation}}">
         <span class="caption">{{image.caption}}</span>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
       </section>
       <p></p>
       {% endif %}
@@ -57,11 +54,17 @@
         </audio>
       </section>
       {% endif %}
-      {% if article.id != 24 %}
       <section class="text">
         {{article.htmlText|safe}}
       </section>
-      {% endif %}
+      <section class="article-image">
+      {% for image in article.nontitleImages %}
+        {% if not image.isAboveText %}
+        <img alt="{{image.name}}" src="{{image.resourceLocation}}">
+        <span class="caption">{{image.caption}}</span>
+        {% endif %}
+      {% endfor %}
+      </section>
       <section>
       {% if article.authors %}
         {% for author in article.authors %}
