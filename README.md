@@ -1,4 +1,4 @@
-# the-flood
+# theflood
 ## Status
 Under dev
 
@@ -27,4 +27,11 @@ Est finish: 1/28
 - Adding basic front end optimization and monitoring (relatively sized images,
   usage stat monitoring, audio support for older browsers, etc...). Est finish: 2/8
 
-- Finish testing and publish. Est finish: 2/11
+- Finish testing and publish. Note to self: I changed app from module to package.
+This will have to be updated in apache config. Est finish: 2/11
+
+  - export FLASK_APP=theflood
+
+  - export FLASK_RUN_PORT=8000
+
+  - flask run --host=0.0.0.0
