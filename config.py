@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
-import psycopg2
 
+import psycopg2
 
 def create_tables():
     """create tables in database"""
@@ -126,5 +126,3 @@ def drop_tables():
 if __name__ == '__main__':
     drop_tables()
     create_tables()
-
-# TODO: add serialize functions for tables

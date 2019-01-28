@@ -1,10 +1,22 @@
 # the-flood
-status: Under dev
+##Status
+Under dev
 
-Update 1/26/19:
+##Setup Instructions
+- config.py requires the following:
+-- pyscopg2 in your python 2.7 environment
+-- a database named 'flood' with user 'flood' that has privileges to delete and
+create tables
+
+- Running config.py drops existing tables and recreates them with the flood schema
+
+- The main application method lives in floodserver.py and is served over port 8000
+
+##Update 1/26/19:
 
 - Refactoring w/ separation of concerns and adding unit tests in order to make code more
-readable and maintainable. Est finish: 1/28
+readable and maintainable. This also includes restructuring and deleting obsolete files.
+Est finish: 1/28
 
 - Making editor pages dynamic w/ Reactjs interfaces and JavaScript. Est finish: 2/1
 
