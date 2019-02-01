@@ -12,7 +12,7 @@ class SQL:
             cur.execute(sqlQuery, params)
             conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
-            print error
+            print(error)
         finally:
             if conn is not None:
                 conn.close()
@@ -27,7 +27,7 @@ class SQL:
             sqlClass.__runQuery__(cur, sqlQuery, params)
             results = cur.fetchone()
         except (Exception, psycopg2.DatabaseError) as error:
-            print error
+            print(error)
         finally:
             if conn is not None:
                 conn.close()
@@ -43,7 +43,7 @@ class SQL:
             sqlClass.__runQuery__(cur, sqlQuery, params)
             results = cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
-            print error
+            print(error)
         finally:
             if conn is not None:
                 conn.close()

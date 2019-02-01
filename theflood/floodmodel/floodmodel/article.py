@@ -1,8 +1,8 @@
 #!/usr/bin/env python2.7
 
-from sqlquery import SQL
-from author import Author
-from resource import Resource
+from floodmodel.sqlquery import SQL
+from floodmodel.author import Author
+from floodmodel.resource import Resource
 
 class Article:
     def __init__(self, article):

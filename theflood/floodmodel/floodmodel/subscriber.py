@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-from sqlquery import SQL
+from floodmodel.sqlquery import SQL
 
 class Subscriber:
     def __init__(self, email, name):

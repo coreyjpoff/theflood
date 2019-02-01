@@ -1,11 +1,10 @@
 #!/usr/bin/env python2.7
 
-import sys
 from flask import Flask
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
 app = Flask(__name__)
 
+import floodmodel.sqlquery
+import floodmodel.author
+import floodmodel.resource
+import floodmodel.subscriber
 import floodmodel.article
